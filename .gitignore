@@ -68,7 +68,7 @@ installer/
 .env.test.local
 .env.production.local
 
-# Output of `npm pack`
+# Output of npm pack
 *.tgz
 
 # IDE-specific files

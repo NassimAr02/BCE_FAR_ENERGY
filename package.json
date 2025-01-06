@@ -1,18 +1,14 @@
 {
-  "name": "stage-far",
+  "name": "stagefar",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron ."
   },
   "author": "",
   "license": "ISC",
-  "description": "Application de bureau pour les visite technique",
+  "description": "",
   "devDependencies": {
     "electron": "^33.2.1"
-  },
-  "dependencies": {
-    "bootstrap": "^5.3.3"
   }
 }
