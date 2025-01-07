@@ -97,3 +97,5 @@ out/squirrel/
 
 # Other files
 .node_repl_history
+
+node_modules/
