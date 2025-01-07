@@ -1,15 +1,89 @@
-body{
-    background-color:gainsboro;
-}
-.contain{
+body {
+    background-color: gainsboro; /* Couleur de fond */
+    font-family: Arial, Helvetica, sans-serif; /* Police générale */
+    margin: 0;
+    padding: 0;
     display: flex;
-    align-items: center;
-    justify-content: center
+    flex-direction: column;
+    align-items: center; /* Centre horizontalement le contenu */
+    justify-content: center; /* Centre verticalement le contenu */
+    height: 100vh; /* Hauteur complète de la fenêtre */
 }
-.contain a{
-    text-decoration: none;
-    color: black;
+
+header img {
+    max-width: 150px; /* Ajuste la taille du logo */
+    margin-bottom: 20px; /* Espace entre le logo et les boutons */
 }
-.contain a:visited{
-    text-transform: none;
+
+.contain {
+    display: flex; /* Utilise Flexbox pour organiser les boutons */
+    gap: 20px; /* Espace entre les boutons */
+    justify-content: center; /* Centre les boutons horizontalement */
+}
+
+fieldset {
+    border: 2px solid #1d317c; /* Bordure bleue */
+    border-radius: 8px; /* Coins arrondis */
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    width: 300px; /* Largeur fixe, ajustée pour le contenu */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre les éléments à l'intérieur du fieldset */
+}
+button {
+    background-color: #1d317c; /* Couleur de fond des boutons */
+    color: white; /* Couleur du texte */
+    border: none; /* Supprime les bordures */
+    padding: 12px 20px; /* Espacement interne */
+    font-size: 16px; /* Taille du texte */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur pointeur au survol */
+    margin-top: 15px; /* Espace au-dessus du bouton */
+    width: 101%; /* Bouton occupe toute la largeur */
+}
+
+button:hover {
+    background-color: #0056b3; /* Couleur au survol */
+}
+
+button a {
+    text-decoration: none; /* Supprime le soulignement des liens */
+    color: white; /* Assure que le texte du lien est blanc */
+}
+
+button a:visited {
+    color: white; /* Maintient la couleur blanche même après visite */
+}
+.connect {
+    display: flex;
+    flex-direction: column; /* Empile les éléments verticalement */
+    gap: 15px; /* Espace entre les champs */
+}
+input[type="text"], input[type="password"] {
+    width: 93%; /* Prend toute la largeur du formulaire */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px; /* Espace entre les champs */
+}
+.button-group {
+    display: flex;
+    justify-content: space-between; /* Espace entre les boutons */
+    gap: 10px;
+}
+
+button[type="reset"] {
+    background-color: #6c757d; /* Bouton réinitialiser en gris */
+}
+
+button[type="reset"]:hover {
+    background-color: #5a6268; /* Gris plus foncé au survol */
+}
+label {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 10px; /* Espace sous chaque label */
+    font-size: 14px; /* Taille du texte */
 }

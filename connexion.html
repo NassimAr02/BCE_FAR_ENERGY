@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Connexion</title>
+</head>
+<body>
+    <header>
+        <a href="index.html"><img src="logo-FAR.png" alt="Logo FAR" ></a>
+    </header>
+    <fieldset>
+        <form id="login">
+            <div class="connect"> 
+                <input type="text" id="idCompte" placeholder="Entrez votre identifiant">
+                <input type="password" id="mdpCO" placeholder="Entrez votre mot de passe">
+                <div class="button-group">
+                    <button id="connect" onclick="login()">Se connecter</button>
+                    <button id="efface" type="reset">Réinitialiser</button>
+                </div>
+                <p id="error-message" style="color: red; display: none;">Nom d'utilisateur ou mot de passe incorrect</p> <!-- Message d'erreur -->
+            </div>
+        </form>
+    </fieldset>
+    
+    <script>
+        async function login() {
+            const username = document.getElementById("idCompte").value;
+            const password = document.getElementById("mdpCO").value;
+
+            
+            const isValid = await window.electron.login(username, password);
+
+            
+            if (isValid) {
+                window.location.href = 'acceuilConnecté.html';
+            } else {
+                // Afficher le message d'erreur sous les champs de saisie
+                document.getElementById("error-message").style.display = 'block';  
+                document.getElementById("idCompte").value = '';  // Réinitialiser le champ utilisateur
+                document.getElementById("mdpCO").value = '';  // Réinitialiser le champ mot de passe
+            }
+        }
+
+    </script>
+</body>
+</html>
