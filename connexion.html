@@ -13,10 +13,12 @@
     <fieldset>
         <form id="login">
             <div class="connect"> 
+                <label for="idCompte">Identifiant du compte</label>
                 <input type="text" id="idCompte" placeholder="Entrez votre identifiant">
+                <label for="mdpCO">Mot de passe</label>
                 <input type="password" id="mdpCO" placeholder="Entrez votre mot de passe">
                 <div class="button-group">
-                    <button id="connect" onclick="login()">Se connecter</button>
+                    <button id="connect" onclick="login(event)">Connexion</button>
                     <button id="efface" type="reset">Réinitialiser</button>
                 </div>
                 <p id="error-message" style="color: red; display: none;">Nom d'utilisateur ou mot de passe incorrect</p> <!-- Message d'erreur -->
@@ -25,7 +27,8 @@
     </fieldset>
     
     <script>
-        async function login() {
+        async function login(event) {
+            event.preventDefault();
             const username = document.getElementById("idCompte").value;
             const password = document.getElementById("mdpCO").value;
 

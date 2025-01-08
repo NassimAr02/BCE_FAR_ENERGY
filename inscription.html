@@ -42,34 +42,47 @@
             <label for="idCompte">Identifiant du compte</label><input type="text" name="idCompte" id="idCompte" readonly required>
             <label for="mdpCO1">Mot de passe du compte</label><input type="password" name="mdpCO1" id="mdpCO1" required>
             <label for="mdpCO2">Confirmer le mot de passe</label><input type="password" name="mdpCO2" id="mdpCO2" required>
-            <button id="valider" onclick="addUser()">Valider</button>
+            <button id="valider" onclick="addUser(event)">Valider</button>
             <button id="efface" type="reset">Réinitialiser</button>
         </form>
     </fieldset>
 
     <script>
-        async function addUser(){
-            let nomCO = document.getElementById('nomCO');
-            let prenomCO = document.getElementById('prenomCO');
-            let mdpCO1 = document.getElementById('mdpCO1');
-            let mdpCO2 = document.getElementById('mdpCO2');
-            
-            if(mdpCO1 !== mdpCO2){
-                document.getElementById("error-message1").style.display = 'block'; 
-                document.getElementById('nomCO').value = '';
-                document.getElementById('prenomCO').value = '';
-                document.getElementById('idCompte').value ='';
-                document.getElementById('mdpCO1').value = '';  
-                document.getElementById('mdpCO2').value = '';          
-            } else if((mdpCO1.length < 12)||!mdpCO1.match(/[a-z]/) && !mdpCO1.match(/[A-Z]/)||!mdpCO1.match(/\d/)||!mdpCO1.match(/[^a-zA-Z\d]/)) {
-                document.getElementById("error-message2").style.display = 'block'; 
-                document.getElementById('nomCO').value = '';
-                document.getElementById('prenomCO').value = '';
-                document.getElementById('idCompte').value ='';
-                document.getElementById('mdpCO1').value = '';  
-                document.getElementById('mdpCO2').value = ''; 
+        async function addUser(event) {
+            // Réinitialiser les messages d'erreur
+            event.preventDefault();
+            document.getElementById("error-message1").style.display = 'none';
+            document.getElementById("error-message2").style.display = 'none';
+
+            let nomCO = document.getElementById('nomCO').value;
+            let prenomCO = document.getElementById('prenomCO').value;
+            let mdpCO1 = document.getElementById('mdpCO1').value;
+            let mdpCO2 = document.getElementById('mdpCO2').value;
+
+            if (mdpCO1 !== mdpCO2) {
+                document.getElementById("error-message1").style.display = 'block';
+                document.getElementById('mdpCO1').value = '';
+                document.getElementById('mdpCO2').value = '';
+            } else if ((mdpCO1.length < 12) || 
+                    !mdpCO1.match(/[a-z]/) || 
+                    !mdpCO1.match(/[A-Z]/) || 
+                    !mdpCO1.match(/\d/) || 
+                    !mdpCO1.match(/[^a-zA-Z\d]/)) {
+                document.getElementById("error-message2").style.display = 'block';
+                document.getElementById('mdpCO1').value = '';
+                document.getElementById('mdpCO2').value = '';
+            } else {
+                try {
+                    const result = await window.electron.insertConseiller(nomCO, prenomCO, mdpCO1);
+                    console.log(result);
+                    window.location.href = 'connexion.html';
+                } catch (err) {
+                    console.error('Erreur lors de l\'insertion :', err);
+                    alert("Échec de l'insertion des données.");
+                }
             }
         }
+
     </script>
 </body>
 </html>

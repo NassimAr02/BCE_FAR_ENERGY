@@ -29,44 +29,129 @@ const createWindow = () => {
 
 // Fonction pour initialiser la base de données
 async function initDatabase() {
-    const dbPath = path.join(app.getPath('userData'), "database.sqlite");
-    dbBCE = new Database(dbPath);  // Initialisation de dbBCE en dehors de la fonction
+    try{
+        const dbPath = path.join(app.getPath('userData'), "database.sqlite");
+    dbBCE = new Database(dbPath);
 
-    // Créer la table si elle n'existe pas déjà
+    // Créer les tables si elles n'existent pas
     dbBCE.exec(`
-        DROP TABLE IF EXISTS Conseiller;
         CREATE TABLE IF NOT EXISTS Conseiller(
-            numCo INTEGER PRIMARY KEY AUTOINCREMENT,
-            nomCo TEXT NOT NULL,
-            prenomCo TEXT NOT NULL,
-            idCo VARCHAR NOT NULL, 
-            mdcCo VARCHAR NOT NULL
+            numCo INTEGER PRIMARY KEY,
+            idCo VARCHAR(50),
+            nomCo VARCHAR(30),
+            prenomCo VARCHAR(30),
+            mdpCo VARCHAR
+        );
+
+        CREATE TABLE IF NOT EXISTS Client(
+            SIRET VARCHAR(50) PRIMARY KEY,
+            raisonSociale VARCHAR(50),
+            adresse VARCHAR(150),
+            secteurActivite VARCHAR(50),
+            effectifEntreprise INTEGER,
+            horaireOuverture VARCHAR(50),
+            dateCreation DATE,
+            consommationAnnuelle DECIMAL(20,2),
+            proprieteMur BOOLEAN,
+            dureeAmortissement VARCHAR(15),
+            dépenseElec DECIMAL(20,2),
+            natureProjet VARCHAR(50)
+        );
+
+        CREATE TABLE IF NOT EXISTS representantClient(
+            SIRET VARCHAR(50),
+            numR INTEGER ,
+            nomR VARCHAR(25),
+            prenomR VARCHAR(25),
+            telR VARCHAR(15),
+            emailR VARCHAR(50),
+            PRIMARY KEY(SIRET, numR),
+            FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
+        );
+
+        CREATE TABLE IF NOT EXISTS equipementClient(
+            numEquipement INTEGER PRIMARY KEY ,
+            puissanceCompteur DECIMAL(15,2),
+            ampérage DECIMAL(15,2),
+            pointLivraison VARCHAR(50),
+            typeCourant VARCHAR(50),
+            SIRET VARCHAR(50) NOT NULL,
+            FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
+        );
+
+        CREATE TABLE IF NOT EXISTS bilan(
+            numBilan INTEGER PRIMARY KEY ,
+            consoKwH DECIMAL(15,2),
+            montantGlobal DECIMAL(15,2),
+            abo_Conso VARCHAR(50),
+            partAcheminement DECIMAL(15,2),
+            CTA_CSPE DECIMAL(15,2),
+            TVA DECIMAL(4,2),
+            necessite BOOLEAN,
+            motivationProjet VARCHAR(500),
+            refusProjet VARCHAR(500),
+            numCo INTEGER NOT NULL,
+            numEquipement INTEGER NOT NULL,
+            FOREIGN KEY(numCo) REFERENCES Conseiller(numCo),
+            FOREIGN KEY(numEquipement) REFERENCES equipementClient(numEquipement)
+        );
+
+        CREATE TABLE IF NOT EXISTS simulationClient(
+            numSimulation INTEGER PRIMARY KEY ,
+            prixKwH2024 DECIMAL(15,2),
+            prixKwH2030 DECIMAL(15,2),
+            prixKwH2035 DECIMAL(15,2),
+            montant10A DECIMAL(15,2),
+            acheminement10A DECIMAL(15,2),
+            capacitéProd DECIMAL(15,2),
+            puissanceInsta DECIMAL(15,2),
+            coutPanneau DECIMAL(15,2),
+            coutBatterie DECIMAL(15,2),
+            primeAutoCo DECIMAL(15,2),
+            RAC DECIMAL(15,2),
+            dateBilan DATETIME DEFAULT CURRENT_TIMESTAMP,
+            economie25a VARCHAR(50),
+            graphiqueF VARCHAR(150),
+            numCo INTEGER NOT NULL,
+            numBilan INTEGER NOT NULL,
+            FOREIGN KEY(numCo) REFERENCES Conseiller(numCo),
+            FOREIGN KEY(numBilan) REFERENCES bilan(numBilan)
         );
     `);
 
-    // Exemple d'ajout de conseiller avec mot de passe haché
-    const password = 'monMotDePasse'; // Le mot de passe à hacher
-    const hash = await argon2.hash(password); // Hacher le mot de passe
-
-    // Insertion dans la base de données avec mot de passe haché
-    const stmt = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdcCo) VALUES (?, ?, ?, ?)');
-    stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);  // Insérer un conseiller avec mot de passe haché
+    // Exemple d'ajout d'un conseiller
+    const password = 'monMotDePasse';
+    const hash = await argon2.hash(password);
+    const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+    stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
+    } catch (err){
+        console.error('Erreur lors de l\'initialisation de la base de données :', err);
+    }
+    
 }
+
 
 // Fonction pour insérer un conseiller
-function insertConseiller(numAE, nomCO, prenomCO, mdpCO) {
-    const hash = argon2.hashSync(mdpCO); // Hacher le mot de passe
-    const req = dbBCE.prepare('INSERT INTO Conseiller (numCo, nomCo, prenomCo, idCo, mdcCo) VALUES (?, ?, ?, ?, ?)');
-    let idCO = nomCO + '.' + prenomCO;
-    req.run(numAE, nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
+async function insertConseiller(nomCO, prenomCO, mdpCO) {
+    const hash = await argon2.hash(mdpCO); // Hacher le mot de passe
+    const req = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+    const idCO = `${nomCO}.${prenomCO}`; // Génération de l'identifiant
+    req.run(nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
 }
 
+
 // Exposer l'insertion du conseiller à l'IPC
-ipcMain.handle('insertConseiller', (event, numAE, nomCO, prenomCO, mdpCO) => {
-    insertConseiller(numAE, nomCO, prenomCO, mdpCO);
-    return 'Conseiller ajouté avec succès';
+ipcMain.handle('insertConseiller', async (event, nomCO, prenomCO, mdpCO) => {
+    try {
+        await insertConseiller(nomCO, prenomCO, mdpCO); // Appel de la fonction asynchrone
+        return 'Conseiller ajouté avec succès';
+    } catch (err) {
+        console.error("Erreur lors de l'insertion du conseiller :", err);
+        throw new Error('Échec de l\'ajout du conseiller');
+    }
 });
 
+let numCon;
 // Fonction pour vérifier le mot de passe
 async function verifyPassword(username, password) {
     
@@ -76,10 +161,9 @@ async function verifyPassword(username, password) {
         return false;
     }
 
-
     try {
-        const valid = await argon2.verify(user.mdcCo, password);  // Vérification du mot de passe
-        
+        const valid = await argon2.verify(user.mdpCo, password);  // Vérification du mot de passe
+        numCon = user.numCo;
         return valid;
     } catch (err) {
         console.log("Erreur lors de la vérification du mot de passe:", err);  // Log en cas d'erreur

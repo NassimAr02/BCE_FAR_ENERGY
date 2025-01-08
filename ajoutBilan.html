@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <fieldset>
+        <form action="Renseignement" class="renseignementEn">
+            <!-- Formulaire Informations de l'entreprise -->
+            <div class="renseignementE">
+                <h2>Informations de l'entreprise :</h2>
+                <label for="SIRET">Numéro SIRET du client</label>
+                <input type="text" id="SIRET" required>
+
+                <label for="raisonSociale">Raison sociale du client</label>
+                <input type="text" id="raisonSociale" required>
+
+                <label for="adresse">Adresse</label>
+                <input type="text" id="adresse" required>
+
+                <label for="secteurActivite">Secteur d'activité</label>
+                <input type="text" id="secteurActivite" required>
+
+                <label for="effectifE">Effectif entreprise</label>
+                <input type="text" id="effectifE" required>
+
+                <label for="dateCreation">Date création de l'entreprise</label>
+                <input type="date" id="dateCreation" required>
+            </div>
+
+            <!-- Formulaire Informations du représentant -->
+            <div class="representantE">
+                <h2>Représentant de l'entreprise :</h2>
+                <label for="nomR">Nom représentant</label>
+                <input type="text" id="nomR" required>
+
+                <label for="prenomR">Prénom représentant</label>
+                <input type="text" id="prenomR" required>
+
+                <label for="telR">Téléphone représentant</label>
+                <input type="tel" id="telR" pattern="[0-9]{10}" required>
+
+                <label for="emailR">Email représentant</label>
+                <input type="email" id="emailR" required>
+            </div>
+
+            <!-- Boutons en bas du formulaire -->
+            <div class="button-group">
+                <button id="valider" onclick="addUser(event)">Valider</button>
+                <button id="efface" type="reset">Réinitialiser</button>
+            </div>
+        </form>
+    </fieldset>
+</body>
+</html>
