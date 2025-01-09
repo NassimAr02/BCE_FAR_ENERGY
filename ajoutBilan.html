@@ -4,55 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BCE</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
 </head>
 <body>
-    <fieldset>
-        <form action="Renseignement" class="renseignementEn">
-            <!-- Formulaire Informations de l'entreprise -->
-            <div class="renseignementE">
-                <h2>Informations de l'entreprise :</h2>
-                <label for="SIRET">Numéro SIRET du client</label>
-                <input type="text" id="SIRET" required>
-
-                <label for="raisonSociale">Raison sociale du client</label>
-                <input type="text" id="raisonSociale" required>
-
-                <label for="adresse">Adresse</label>
-                <input type="text" id="adresse" required>
-
-                <label for="secteurActivite">Secteur d'activité</label>
-                <input type="text" id="secteurActivite" required>
-
-                <label for="effectifE">Effectif entreprise</label>
-                <input type="text" id="effectifE" required>
-
-                <label for="dateCreation">Date création de l'entreprise</label>
-                <input type="date" id="dateCreation" required>
+    <script src="scriptForm.js"> </script>
+    <header>
+        <a href="acceuilConnecté.html"><img src="logo-FAR.png" alt="Logo FAR" ></a>
+    </header>
+    <main>
+        <fieldset>
+            <div class="stepper">
+                <div class="step step--1 step-active">Étape 1</div>
+                <div class="step step--2">Étape 2</div>
+                <div class="step step--3">Etape 3</div>
+                <div class="step step--4">Finaliser</div>
             </div>
 
-            <!-- Formulaire Informations du représentant -->
-            <div class="representantE">
-                <h2>Représentant de l'entreprise :</h2>
-                <label for="nomR">Nom représentant</label>
-                <input type="text" id="nomR" required>
+            <!-- Étape 1 -->
+            <form class="form form-active" id="form-step-1">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Représentant Client :</h1>
+                </div>
+                <input type="text" id="nomR" placeholder="Nom du représentant" required>
+                <input type="text" id="prenomR" placeholder="Prénom du représentant" required>
+                <input type="tel" id="telR" placeholder="Téléphone du représentant" pattern="\d{10}" required>
+                <input type="email" id="emailR" placeholder="Email du représentant" required>
+                <button type="button" class="form__btn btn-next">Suivant</button>
+            </form>
 
-                <label for="prenomR">Prénom représentant</label>
-                <input type="text" id="prenomR" required>
+            <!-- Étape 2 -->
+            <form class="form" id="form-step-2">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Information sur l'entreprise :</h1>
+                </div>
+                <input type="text" id="SIRET" placeholder="Numéro SIRET" required>
+                <input type="text" id="raisonSociale" placeholder="Raison sociale" required>
+                <input type="text" id="adresse" placeholder="Adresse" required>
+                <input type="text" id="secteurActivite" placeholder="Secteur d'activité" required>
+                <input type="text" id="effectifEntreprise" placeholder="Effectif de l'entreprise" required>
+                <input type="text" id="horaireOuverture" placeholder="Horaire d'ouverture" required>
+                <input type="date" id="dateCreation" placeholder="Date de création" required>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-next">Suivant</button>
+            </form>
 
-                <label for="telR">Téléphone représentant</label>
-                <input type="tel" id="telR" pattern="[0-9]{10}" required>
+            <!-- Étape 3 -->
+            <form class="form" id="form-step-3">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Projet :</h1>
+                </div>
+                <input type="text" id="consommationAnnuelle" placeholder="Consommation annuelle" required>
+                <label for="proprieteMur">Propriété des murs</label>
+                <label><input type="radio" name="proprieteMur" value="oui"> Oui</label>
+                <label><input type="radio" name="proprieteMur" value="non"> Non</label>
+                <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement">
+                <input type="text" id="depenseElec" placeholder="Dépense Électrique" required>
+                <label for="natureProjet">Nature du projet</label>
+                <select id="natureProjet" required>
+                    <option value="Autoconsommation">Autoconsommation</option>
+                    <option value="Revente du surplus">Revente du surplus</option>
+                    <option value="Revente totale">Revente totale</option>
+                </select>
+            </form>
+            <form action="form" id="form-step-4">
+                <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur">
+                <input type="text" id="ampérage" placeholder="Ampérage">
+                <input type="text" id="pointLivraison" placeholder="Point de livraison">
+                <label for="typeCourant">
+                    <select id="typeCourant">
+                        <option value="Monophasé">Monophasé</option>
+                        <option value="Triphasé">Triphasé</option>
+                    </select>
+                </label>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-submit">Valider</button>
+            </form>
+        </fieldset>
+    </main>
 
-                <label for="emailR">Email représentant</label>
-                <input type="email" id="emailR" required>
-            </div>
-
-            <!-- Boutons en bas du formulaire -->
-            <div class="button-group">
-                <button id="valider" onclick="addUser(event)">Valider</button>
-                <button id="efface" type="reset">Réinitialiser</button>
-            </div>
-        </form>
-    </fieldset>
+   
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
@@ -35,6 +36,7 @@ async function initDatabase() {
 
     // Créer les tables si elles n'existent pas
     dbBCE.exec(`
+        DROP TABLE IF EXISTS Conseiller;
         CREATE TABLE IF NOT EXISTS Conseiller(
             numCo INTEGER PRIMARY KEY,
             idCo VARCHAR(50),
@@ -42,7 +44,7 @@ async function initDatabase() {
             prenomCo VARCHAR(30),
             mdpCo VARCHAR
         );
-
+        DROP TABLE IF EXISTS Client;
         CREATE TABLE IF NOT EXISTS Client(
             SIRET VARCHAR(50) PRIMARY KEY,
             raisonSociale VARCHAR(50),
@@ -55,9 +57,13 @@ async function initDatabase() {
             proprieteMur BOOLEAN,
             dureeAmortissement VARCHAR(15),
             dépenseElec DECIMAL(20,2),
-            natureProjet VARCHAR(50)
+            natureProjet VARCHAR(50),
+            puissanceCompteur DECIMAL(15,2),
+            ampérage DECIMAL(15,2),
+            pointLivraison VARCHAR(50),
+            typeCourant VARCHAR(50)
         );
-
+        DROP TABLE IF EXISTS representantClient;
         CREATE TABLE IF NOT EXISTS representantClient(
             SIRET VARCHAR(50),
             numR INTEGER ,
@@ -68,17 +74,8 @@ async function initDatabase() {
             PRIMARY KEY(SIRET, numR),
             FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
         );
-
-        CREATE TABLE IF NOT EXISTS equipementClient(
-            numEquipement INTEGER PRIMARY KEY ,
-            puissanceCompteur DECIMAL(15,2),
-            ampérage DECIMAL(15,2),
-            pointLivraison VARCHAR(50),
-            typeCourant VARCHAR(50),
-            SIRET VARCHAR(50) NOT NULL,
-            FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
-        );
-
+        
+        DROP TABLE IF EXISTS bilan;
         CREATE TABLE IF NOT EXISTS bilan(
             numBilan INTEGER PRIMARY KEY ,
             consoKwH DECIMAL(15,2),
@@ -92,10 +89,10 @@ async function initDatabase() {
             refusProjet VARCHAR(500),
             numCo INTEGER NOT NULL,
             numEquipement INTEGER NOT NULL,
-            FOREIGN KEY(numCo) REFERENCES Conseiller(numCo),
-            FOREIGN KEY(numEquipement) REFERENCES equipementClient(numEquipement)
+            FOREIGN KEY(SIRET) REFERENCES Client(SIRET),
+            FOREIGN KEY(numCO) REFERENCES Conseiller(numCO)
         );
-
+        DROP TABLE IF EXISTS simulationClient;
         CREATE TABLE IF NOT EXISTS simulationClient(
             numSimulation INTEGER PRIMARY KEY ,
             prixKwH2024 DECIMAL(15,2),
@@ -140,18 +137,47 @@ async function insertConseiller(nomCO, prenomCO, mdpCO) {
 }
 
 
+
 // Exposer l'insertion du conseiller à l'IPC
 ipcMain.handle('insertConseiller', async (event, nomCO, prenomCO, mdpCO) => {
     try {
         await insertConseiller(nomCO, prenomCO, mdpCO); // Appel de la fonction asynchrone
         return 'Conseiller ajouté avec succès';
     } catch (err) {
-        console.error("Erreur lors de l'insertion du conseiller :", err);
+        console.error("Erreur lors de l'insertion du conseiller : ", err);
         throw new Error('Échec de l\'ajout du conseiller');
     }
 });
 
+async function insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet){
+    const req = dbBCE.prepare('INSERT INTO CLIENT(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)');
+    req.run(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet);
+}
+ipcMain.handle('insertClient',async (event,SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet) =>{
+    try {
+        await insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet)
+        numSIRET = SIRET;
+        return 'Client ajouté avec succès';
+    } catch (err){
+        console.error("Erreur lors de l'insertion du client : ",err);
+        throw new Error("Échec de l\'ajout du client");
+    }
+})
+async function insertRepresentantClient(SIRET,nomR,prenomR,telR,emailR){
+    const req = dbBCE.prepare('INSERT INTO representantClient(SIRET,nomR,prenomR,telR,emailR) VALUES(?,?,?,?,?)');
+    req.run(SIRET,nomR,prenomR,telR,emailR);
+}
+ipcMain.handle('insertRepresentantClient',async(event,SIRET,nomR,prenomR,telR,emailR) => {
+    try {
+        await insertRepresentantClient(SIRET,nomR,prenomR,telR,emailR);
+        return 'Représentant ajouté avec succès';
+    } catch(err){
+        console.error("Erreur lors de l'insertion du représentant : ",err)
+        throw new Error("Échec de l\'ajout du représentant client");
+    }
+})
 let numCon;
+let numSIRET; 
 // Fonction pour vérifier le mot de passe
 async function verifyPassword(username, password) {
     
@@ -176,6 +202,8 @@ ipcMain.handle('login', async (event, username, password) => {
     const isValid = await verifyPassword(username, password);
     return isValid;
 });
+
+
 
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {

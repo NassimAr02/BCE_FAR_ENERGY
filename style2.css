@@ -1,0 +1,177 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito&display=swap");
+
+/* Réinitialisation des marges et paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Style global */
+body {
+  background-color: gainsboro; /* Couleur de fond */
+  font-family: Arial, Helvetica, sans-serif; /* Police générale */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement le contenu */
+  justify-content: center; /* Centre verticalement le contenu */
+  height: 100vh; /* Hauteur complète de la fenêtre */
+}
+
+/* En-tête (si nécessaire pour le logo ou autres éléments) */
+header img {
+  max-width: 150px; /* Ajuste la taille du logo */
+  margin-bottom: 20px; /* Espace entre le logo et les boutons */
+}
+
+/* Conteneur des boutons (si utilisé) */
+.contain {
+  display: flex; /* Utilise Flexbox pour organiser les boutons */
+  gap: 20px; /* Espace entre les boutons */
+  justify-content: center; /* Centre les boutons horizontalement */
+}
+
+/* Fieldset */
+fieldset {
+  border: 2px solid #1d317c; /* Bordure bleue */
+  border-radius: 8px; /* Coins arrondis */
+  padding: 30px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  width: 300px; /* Largeur fixe, ajustée pour le contenu */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre les éléments à l'intérieur */
+}
+
+/* Style des étapes */
+.stepper {
+  width: 100%; /* S'adapte au conteneur */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Espace entre les étapes */
+  margin-bottom: 20px; /* Espace avec le formulaire */
+}
+
+.step {
+  width: 30%;
+  padding: 10px;
+  background-color: #fff;
+  color: #666;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.step-active {
+  background-color: #1d317c; /* Couleur active */
+  color: white; /* Texte blanc */
+  border-color: #1d317c;
+}
+
+/* Formulaire général */
+.form {
+  display: none; /* Cacher par défaut */
+  flex-direction: column;
+  gap: 15px; /* Espace entre les champs */
+  width: 100%;
+}
+
+.form-active {
+  display: flex; /* Afficher le formulaire actif */
+}
+
+/* Champs de texte */
+input[type="text"],
+input[type="password"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+select {
+  width: 93%; /* Largeur ajustée */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px; /* Espacement sous chaque champ */
+}
+
+/* Boutons */
+button {
+  background-color: #1d317c; /* Couleur principale */
+  color: white; /* Couleur du texte */
+  border: none; /* Supprime les bordures */
+  padding: 12px 20px; /* Espacement interne */
+  font-size: 16px; /* Taille du texte */
+  border-radius: 5px; /* Coins arrondis */
+  cursor: pointer; /* Curseur pointeur au survol */
+  width: 100%; /* Bouton large */
+}
+
+button:hover {
+  background-color: #0056b3; /* Couleur au survol */
+}
+
+button[type="reset"] {
+  background-color: #6c757d; /* Bouton réinitialiser en gris */
+}
+
+button[type="reset"]:hover {
+  background-color: #5a6268; /* Gris plus foncé au survol */
+}
+
+/* Alignement spécifique des boutons */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Espace entre les boutons */
+}
+
+/* Styles des en-têtes */
+.form--header-container {
+  color: #1d317c;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.form--header-title {
+  font-size: 1.4rem;
+}
+
+/* Effets d'animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes moveRight {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes moveLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
