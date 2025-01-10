@@ -31,13 +31,13 @@
         DROP TABLE IF EXISTS bilan;
         CREATE TABLE IF NOT EXISTS bilan(
         numBilan INTEGER,
+        necessite BOOLEAN,
         consoKwH DECIMAL(15,2),
         montantGlobal DECIMAL(15,2),
         abo_Conso VARCHAR(50),
         partAcheminement DECIMAL(15,2),
         CTA_CSPE DECIMAL(15,2),
         TVA DECIMAL(4,2),
-        necessite BOOLEAN,
         motivationProjet VARCHAR(500),
         refusProjet VARCHAR(500),
         SIRET VARCHAR(50) NOT NULL,

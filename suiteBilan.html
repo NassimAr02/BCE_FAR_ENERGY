@@ -7,6 +7,18 @@
     <title>Document</title>
 </head>
 <body>
+    <script src="scriptForm2.js"></script>
+    <script>
+        function montantG() {
+        let acheminement = parseFloat(document.getElementById("partAcheminement").value) || 0;
+        let CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE").value) || 0;
+        let TVA = parseFloat(document.getElementById("TVA").value) || 0;
+
+        let montantGl = acheminement + CTA_CSPE + TVA;
+
+        document.getElementById("montantGlobalTot").value = montantGl.toFixed(2); // Formate en 2 décimales
+    }
+    </script>
     <main>
         <fieldset>
             <div class="stepper">
@@ -19,6 +31,26 @@
                     <h1 class="form--header-title">Analyse facture :</h1>
                 </div>
                 <label for="analyseFacture">Avez vous déja analysé votre facture ?</label>
+                <div id="analyseFacture">
+                    <br><label><input type="radio" name="analyseFacture" id="analyseFactureOui" value="true" checked> Oui</label>
+                    <label><input type="radio" name="analyseFacture" id="analyseFactureNon" value="false"> Non</label>
+                </div>
+                <br>
+                <input type="text" id="consoKwH" placeholder="Consommation (KwH)">
+                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle">
+                <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)">
+                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement(HT)" oninput="montantG()">
+                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions(CTA + CSPE (HT))" oninput="montantG()">
+                <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
+                <input type="text" id="montantGlobalTot" placeholder="Montant Global(Taxes + Achemin. + TVA)" readonly>
+                <button type="button" class="form__btn btn-next">Suivant</button>
+            </form>
+            <form class="form" id="form-step-2">
+                <div class="form--header-container">
+                    <h1 class="form--header-title"></h1>
+                </div>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-next">Suivant</button>
             </form>
         </fieldset>
     </main>    

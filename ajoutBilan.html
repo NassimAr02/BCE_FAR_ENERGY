@@ -56,12 +56,12 @@
                 <input type="text" id="consommationAnnuelle" placeholder="Consommation annuelle" required>
                 <label for="proprieteMur">Propriété des murs :</label>
                 <div id="proprieteMur">
-                    <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="oui"> Oui</label>
-                    <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="non"> Non</label>
+                    <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="true" checked> Oui</label>
+                    <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="false"> Non</label>
                 </div>
                 <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement">
                 <input type="text" id="depenseElec" placeholder="Dépense Électrique" required>
-                <label for="natureProjet">Nature du projet</label>
+                <label for="natureProjet">Nature du projet :</label>
                 <select id="natureProjet" required>
                     <option value="Autoconsommation">Autoconsommation</option>
                     <option value="Revente du surplus">Revente du surplus</option>
@@ -74,9 +74,9 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Equipement Client :</h1>
                 </div>
-                <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur">
-                <input type="text" id="ampérage" placeholder="Ampérage">
-                <input type="text" id="pointLivraison" placeholder="Point de livraison">
+                <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur" required>
+                <input type="text" id="ampérage" placeholder="Ampérage" required>
+                <input type="text" id="pointLivraison" placeholder="Point de livraison" required>
                 <label for="typeCourant">
                     <select id="typeCourant">
                         <option value="Monophasé">Monophasé</option>
