@@ -47,12 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
       let dureeAmortissement = document.getElementById('dureeAmortissement').value;
       let depenseElec = document.getElementById('depenseElec').value;
       let natureProjet = document.getElementById('natureProjet').value;
+      let puissanceCompteur = document.getElementById("puissanceCompteur").value;
+      let ampérage = document.getElementById("ampérage").value;
+      let pointLivraison = document.getElementById("pointLivraison").value;
+      let typeCourant = document.getElementById("typeCourant").value;
 
       try {
           await window.electron.insertClient(
-              SIRET, raisonSociale, adresse, secteurActivite, effectifEntreprise,
-              horaireOuverture, dateCreation, consommationAnnuelle, proprieteMur,
-              dureeAmortissement, depenseElec, natureProjet
+            SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,
+            dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,
+            depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant
           );
           console.log("Client inséré avec succès !");
       } catch (err) {
@@ -61,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   }
 
+  let numSIRET;
   // Fonction pour insérer un représentant
   async function insertRepresentantClient() {
       let SIRET = document.getElementById('SIRET').value;
@@ -71,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
           await window.electron.insertRepresentantClient(SIRET, nomR, prenomR, telR, emailR);
+          numSIRET = SIRET;
           console.log("Représentant inséré avec succès !");
       } catch (err) {
           console.error('Erreur lors de l\'insertion du représentant :', err);
@@ -86,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
           await insertClient();
           await insertRepresentantClient();
           alert("Formulaire soumis avec succès !");
-          window.location.href = 'suiteBilan.html';
+          window.location.href = `suiteBilan.html?siret=${encodeURIComponent(numSIRET)}`;
       } catch (err) {
           alert(err.message);
       }

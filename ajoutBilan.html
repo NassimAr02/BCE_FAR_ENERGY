@@ -54,9 +54,11 @@
                     <h1 class="form--header-title">Projet :</h1>
                 </div>
                 <input type="text" id="consommationAnnuelle" placeholder="Consommation annuelle" required>
-                <label for="proprieteMur">Propriété des murs</label>
-                <label><input type="radio" name="proprieteMur" value="oui"> Oui</label>
-                <label><input type="radio" name="proprieteMur" value="non"> Non</label>
+                <label for="proprieteMur">Propriété des murs :</label>
+                <div id="proprieteMur">
+                    <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="oui"> Oui</label>
+                    <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="non"> Non</label>
+                </div>
                 <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement">
                 <input type="text" id="depenseElec" placeholder="Dépense Électrique" required>
                 <label for="natureProjet">Nature du projet</label>
@@ -65,8 +67,13 @@
                     <option value="Revente du surplus">Revente du surplus</option>
                     <option value="Revente totale">Revente totale</option>
                 </select>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-next">Suivant</button>
             </form>
-            <form action="form" id="form-step-4">
+            <form class="form" id="form-step-4">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Equipement Client :</h1>
+                </div>
                 <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur">
                 <input type="text" id="ampérage" placeholder="Ampérage">
                 <input type="text" id="pointLivraison" placeholder="Point de livraison">
