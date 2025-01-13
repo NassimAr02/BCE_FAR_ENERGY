@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
                 const CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE")?.value) || 0;
                 const TVA = parseFloat(document.getElementById("TVA")?.value) || 0;
 
-                
+
                 const montantGl = acheminement + CTA_CSPE + TVA;
                 const montantGlobalTot = document.getElementById("montantGlobalTot");
                 const montant10 = parseFloat(montantGlobalTot*10)
@@ -55,6 +55,7 @@
                 <div class="step step--1 step-active">Étape 1</div>
                 <div class="step step--2">Étape 2</div>
                 <div class="step step--3">Étape 3</div>
+                <div class="step step--3">Étape 4</div>
             </div>
             <form class="form form-active" id="form-step-1">
                 <div class="form--header-container">
@@ -106,6 +107,7 @@
                     </tr>
                     
                 </table>
+                <label for="montantTaxes10">Montant des taxes sur 10 ans (dont acheminement) :</label>
                 <input type="text" id="montantTaxes10" readonly>
                 <button type="button" class="form__btn btn-prev">Précédent</button>
                 <button type="button" class="form__btn btn-next">Suivant</button>
@@ -115,10 +117,27 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Simulation des coûts sur les prochaines années</h1>
                 </div>
-            
+                <label for="besoin">Estimez vous nécessaire d'agir ? </label>
+                <div id="besoin">
+                    <label for="besoinOui">Oui </label><input type="radio" name="besoin" id="besoinOui" value="true" checked>
+                    <label for="besoinNon">Non </label><input type="radio" name="besoin" id="besoinNon" value="false">
+                </div>
+                <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet"></textarea>
+                <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
                 <button type="button" class="form__btn btn-prev">Précédent</button>
                 <button type="button" class="form__btn btn-next">Suivant</button>
+
             </form>
+            <form class="form" id="form-step-4">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
+                </div>
+                <table>
+                    <th>Producteur</th>
+                </table>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-submit">Valider</button>
+            </form>    
         </fieldset>
     </main>
    

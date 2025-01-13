@@ -19,6 +19,26 @@ const createWindow = () => {
         preload: path.join(__dirname, 'preload.js')
     }
   })
+  // Cette fonction récupère toutes les données de la base de données
+    function afficherToutesLesDonnees() {
+        try {
+            const tables = dbBCE.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
+            
+            tables.forEach(table => {
+                console.log(`\nDonnées de la table : ${table.name}`);
+                const rows = dbBCE.prepare(`SELECT * FROM ${table.name}`).all();
+                console.log(rows);
+                // Envoie les données à la fenêtre de rendu
+                mainWindow.webContents.send('send-data', { tableName: table.name, rows: rows });
+            });
+        } catch (err) {
+            console.error("Erreur lors de l'affichage des données : ", err);
+        }
+    }
+
+    // Afficher les données toutes les 30 secondes
+    setInterval(afficherToutesLesDonnees, 30000);
+
 
   // et chargement de l'index.html de l'application.
   mainWindow.loadFile('index.html')
@@ -48,7 +68,7 @@ async function initDatabase() {
         dbBCE.exec(`
             
             CREATE TABLE IF NOT EXISTS Conseiller(
-                numCo INTEGER,
+                numCo INTEGER  NOT NULL,
                 idCo VARCHAR(50),
                 nomCo VARCHAR(30),
                 prenomCo VARCHAR(30),
@@ -77,7 +97,7 @@ async function initDatabase() {
             );
             
             CREATE TABLE IF NOT EXISTS bilan(
-                numBilan INTEGER,
+                numBilan INTEGER NOT NULL,
                 necessite BOOLEAN,
                 consoKwH DECIMAL(15,2),
                 montantGlobal DECIMAL(15,2),
@@ -96,17 +116,16 @@ async function initDatabase() {
     
             CREATE TABLE IF NOT EXISTS representantClient(
                 SIRET VARCHAR(50),
-                numR INTEGER,
                 nomR VARCHAR(25),
                 prenomR VARCHAR(25),
                 telR VARCHAR(15),
                 emailR VARCHAR(50),
-                PRIMARY KEY(SIRET, numR),
+                PRIMARY KEY(SIRET),
                 FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
             );
             
             CREATE TABLE IF NOT EXISTS simulationClient(
-                numSimulation INTEGER,
+                numSimulation INTEGER NOT NULL,
                 prixKwH2024 DECIMAL(15,2),
                 prixKwH2030 DECIMAL(15,2),
                 prixKwH2035 DECIMAL(15,2),
@@ -254,10 +273,12 @@ function clearDatabase() {
 
 
 
+
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
   createWindow()
   clearDatabase();  
+  
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
