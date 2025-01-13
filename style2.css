@@ -144,6 +144,15 @@ button[type="reset"]:hover {
   font-size: 1.4rem;
 }
 
+.step-container {
+  width: 400px; /* Taille par défaut */
+  transition: width 0.3s ease; /* Transition fluide */
+}
+
+.step-container.wide {
+  width: 700px; /* Taille plus large pour le tableau */
+}
+
 /* Effets d'animation */
 @keyframes fadeIn {
   from {
@@ -175,3 +184,63 @@ button[type="reset"]:hover {
     opacity: 0;
   }
 }
+/* Styles pour le tableau */
+table {
+  width: 100%; /* Prend toute la largeur disponible */
+  border-collapse: collapse; /* Fusionne les bordures */
+  margin-bottom: 20px; /* Espace sous le tableau */
+  font-size: 16px;
+  background-color: white;
+  border-radius: 8px; /* Coins arrondis */
+  overflow: hidden; /* Empêche le débordement des coins */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Lignes des en-têtes */
+table th {
+  background-color: #1d317c; /* Couleur principale */
+  color: white; /* Texte blanc */
+  padding: 12px; /* Espacement interne */
+  text-align: center; /* Centré horizontalement */
+  font-weight: bold; /* Gras */
+  font-size: 16px;
+}
+
+/* Lignes des cellules */
+table td {
+  padding: 12px; /* Espacement interne */
+  text-align: center; /* Alignement centré */
+  border: 1px solid #ccc; /* Bordure grise légère */
+}
+
+/* Alternance des couleurs pour les lignes */
+table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Gris clair pour les lignes paires */
+}
+
+table tr:nth-child(odd) {
+  background-color: #ffffff; /* Blanc pour les lignes impaires */
+}
+
+/* Survol des lignes */
+table tr:hover {
+  background-color: #e0e7ff; /* Bleu clair au survol */
+}
+
+/* Style des cellules contenant des champs input */
+table td input {
+  width: 90%; /* Largeur du champ */
+  padding: 8px; /* Espacement interne */
+  border: 1px solid #ccc; /* Bordure grise */
+  border-radius: 4px; /* Coins arrondis */
+  font-size: 16px; /* Taille du texte */
+}
+
+/* Centrage horizontal du tableau */
+.table-container {
+  width: 100%; /* Largeur du conteneur */
+  max-width: 600px; /* Largeur maximale */
+  margin: 0 auto; /* Centré horizontalement */
+  padding: 10px; /* Espacement interne */
+}
+

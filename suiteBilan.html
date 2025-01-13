@@ -4,33 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style2.css">
-    <title>Document</title>
+    <title>Analyse Facture</title>
 </head>
 <body>
-    <script src="scriptForm2.js"></script>
     <script>
-        function montantG() {
-        let acheminement = parseFloat(document.getElementById("partAcheminement").value) || 0;
-        let CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE").value) || 0;
-        let TVA = parseFloat(document.getElementById("TVA").value) || 0;
+        document.addEventListener("DOMContentLoaded", () => {
+            const année = new Date().getFullYear();
+            const annéeC = "Prix " + année;
+        
+            const annéeCourant = document.getElementById("annéeCourant");
+            if (annéeCourant) {
+                annéeCourant.textContent = annéeC; // Mise à jour du texte
+            }
+        });
+            function montantG() {
+                const acheminement = parseFloat(document.getElementById("partAcheminement")?.value) || 0;
+                const CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE")?.value) || 0;
+                const TVA = parseFloat(document.getElementById("TVA")?.value) || 0;
 
-        let montantGl = acheminement + CTA_CSPE + TVA;
+                
+                const montantGl = acheminement + CTA_CSPE + TVA;
+                const montantGlobalTot = document.getElementById("montantGlobalTot");
+                const montant10 = parseFloat(montantGlobalTot*10)
+                if (montantGlobalTot) {
+                    montantGlobalTot.value = montantGl.toFixed(2); // Formate en 2 décimales
+                }
+            }
+        
+            function calculCout(){
+                const consoKwH =parseFloat(document.getElementById('consoKwH').value)
+                const prixC = parseFloat(document.getElementById('prixCourant').value)
+                const prix2030 =parseFloat(document.getElementById('prix2030').value)
+                const prix2035 =parseFloat(document.getElementById('prix2035').value)
 
-        document.getElementById("montantGlobalTot").value = montantGl.toFixed(2); // Formate en 2 décimales
-    }
+                document.getElementById('mensuelCourant').value = ((consoKwH*prixC)/12).toFixed(2)
+                document.getElementById('mensuel2030').value = ((consoKwH*prix2030)/12).toFixed(2)
+                document.getElementById('mensuel2035').value = ((consoKwH*prix2035)/12).toFixed(2)
+
+                document.getElementById('annuelCourant').value = (consoKwH * prixC).toFixed(2)
+                document.getElementById('annuel2030').value =(consoKwH * prix2030).toFixed(2)
+                document.getElementById('annuel2035').value = (consoKwH * prix2035).toFixed(2)
+            }
+
+      
     </script>
     <main>
-        <fieldset>
+        <fieldset class="step-container">
+            <script src="scriptForm2.js"></script>
             <div class="stepper">
-                <div class="step step--1 step-active">Etape 1</div>
-                <div class="step step--2">Etape 2</div>
-                <div class="step step--3">Etape 3</div>
+                <div class="step step--1 step-active">Étape 1</div>
+                <div class="step step--2">Étape 2</div>
+                <div class="step step--3">Étape 3</div>
             </div>
-            <form action="form form-active" id="form-step-1">
+            <form class="form form-active" id="form-step-1">
                 <div class="form--header-container">
                     <h1 class="form--header-title">Analyse facture :</h1>
                 </div>
-                <label for="analyseFacture">Avez vous déja analysé votre facture ?</label>
+                <label for="analyseFacture">Avez-vous déjà analysé votre facture ?</label>
                 <div id="analyseFacture">
                     <br><label><input type="radio" name="analyseFacture" id="analyseFactureOui" value="true" checked> Oui</label>
                     <label><input type="radio" name="analyseFacture" id="analyseFactureNon" value="false"> Non</label>
@@ -39,20 +69,58 @@
                 <input type="text" id="consoKwH" placeholder="Consommation (KwH)">
                 <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle">
                 <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)">
-                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement(HT)" oninput="montantG()">
-                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions(CTA + CSPE (HT))" oninput="montantG()">
+                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement (HT)" oninput="montantG()">
+                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()">
                 <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
-                <input type="text" id="montantGlobalTot" placeholder="Montant Global(Taxes + Achemin. + TVA)" readonly>
+                <input type="text" id="montantGlobalTot" placeholder="Montant Global (Taxes + Achemin. + TVA)" readonly>
                 <button type="button" class="form__btn btn-next">Suivant</button>
             </form>
             <form class="form" id="form-step-2">
                 <div class="form--header-container">
-                    <h1 class="form--header-title"></h1>
+                    <h1 class="form--header-title">Simulation des coûts sur les prochaines années</h1>
                 </div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th id="annéeCourant"></th>
+                        <th>Prix 2030</th>
+                        <th>Prix 2035</th>
+                    </tr>
+                    <tr>
+                        <td>Prix du KwH</td>
+                        <td><input type="text" id="prixCourant" oninput="calculCout()"></td>
+                        <td><input type="text" id="prix2030" oninput="calculCout()"></td>
+                        <td><input type="text" id="prix2035" oninput="calculCout()"></td>
+                    </tr>
+                    <tr>
+                        <td>coût mensuel</td>
+                        <td><input type="text" id="mensuelCourant" readonly></td>
+                        <td><input type="text" id="mensuel2030" readonly></td>
+                        <td><input type="text" id="mensuel2035" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>coût annuel</td>
+                        <td><input type="text" id="annuelCourant" readonly></td>
+                        <td><input type="text" id="annuel2030" readonly></td>
+                        <td><input type="text" id="annuel2035" readonly></td>
+                    </tr>
+                    
+                </table>
+                <input type="text" id="montantTaxes10" readonly>
+                <button type="button" class="form__btn btn-prev">Précédent</button>
+                <button type="button" class="form__btn btn-next">Suivant</button>
+
+            </form>
+            <form class="form" id="form-step-3">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Simulation des coûts sur les prochaines années</h1>
+                </div>
+            
                 <button type="button" class="form__btn btn-prev">Précédent</button>
                 <button type="button" class="form__btn btn-next">Suivant</button>
             </form>
         </fieldset>
-    </main>    
+    </main>
+   
 </body>
 </html>
