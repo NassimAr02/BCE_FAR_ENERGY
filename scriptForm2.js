@@ -21,11 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             stepContainer.classList.remove("wide");
         }
-        if (step === 3) {
-            stepContainer.classList.add("left");
-        } else {
-            stepContainer.classList.remove("left");
-        }
+        
     };
 
     nextButtons.forEach((btn) => {

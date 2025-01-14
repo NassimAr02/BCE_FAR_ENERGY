@@ -4,6 +4,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const Database = require('better-sqlite3');
 const argon2 = require('argon2');
+const { shell } = require('electron');
 
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
 let dbBCE;
@@ -47,6 +48,10 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools()
   initDatabase();
 }
+
+    
+
+
 
 // Fonction pour initialiser la base de données
 async function initDatabase() {
@@ -272,13 +277,14 @@ function clearDatabase() {
 }
 
 
-
-
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
   createWindow()
   clearDatabase();  
   
+  ipcMain.on('open-link', (event, url) => {
+    shell.openExternal(url);
+});
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

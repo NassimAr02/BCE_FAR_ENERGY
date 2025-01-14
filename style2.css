@@ -40,7 +40,7 @@ fieldset {
   padding: 30px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  width:  400px; /* Largeur fixe, ajustée pour le contenu */
+  width: 400px; /* Largeur fixe, ajustée pour le contenu */
   display: flex;
   flex-direction: column;
   align-items: center; /* Centre les éléments à l'intérieur */
@@ -109,7 +109,7 @@ button {
   font-size: 16px; /* Taille du texte */
   border-radius: 5px; /* Coins arrondis */
   cursor: pointer; /* Curseur pointeur au survol */
-  width: 100%; /* Bouton large */
+                              
 }
 
 button:hover {
@@ -153,8 +153,11 @@ button[type="reset"]:hover {
   width: 700px; /* Taille plus large pour le tableau */
 }
 
-
-
+.step-container.wide.left {
+  display: flex;
+  justify-content: flex-start; /* Aligner à gauche */
+  width: 700px; /* Taille plus large pour le tableau */
+}
 
 /* Effets d'animation */
 @keyframes fadeIn {
@@ -187,6 +190,7 @@ button[type="reset"]:hover {
     opacity: 0;
   }
 }
+
 /* Styles pour le tableau */
 table {
   width: 100%; /* Prend toute la largeur disponible */
@@ -267,4 +271,86 @@ textarea:focus {
   background-color: #ffffff; /* Couleur de fond lors du focus */
   outline: none; /* Supprime la bordure bleue par défaut */
   box-shadow: 0 0 5px rgba(29, 49, 124, 0.5); /* Ombre accentuée au focus */
+}
+
+/* Média-query pour les petits écrans */
+@media screen and (max-width: 1024px) {
+  /* Réduit la taille du fieldset et ajuste le padding */
+  fieldset {
+    width: 90%; /* Réduit la largeur du formulaire */
+    padding: 20px; /* Réduit l'espacement interne */
+  }
+
+  /* Réduit la taille de la police dans les champs de texte */
+  input[type="text"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="date"],
+  select {
+    font-size: 14px; /* Taille réduite pour les petits écrans */
+  }
+
+  /* Réduit la taille des boutons */
+  button {
+    font-size: 14px; /* Taille réduite pour les boutons */
+    padding: 10px 15px; /* Espacement interne ajusté */
+  }
+
+  /* Ajuste la largeur du tableau */
+  table {
+    width: 100%;
+    font-size: 14px; /* Réduit la taille de la police pour s'adapter */
+  }
+
+  /* Réduit la taille du texte dans les cellules du tableau */
+  table td, table th {
+    padding: 8px; /* Espacement réduit */
+    font-size: 14px; /* Réduit la taille de la police */
+  }
+
+  /* Adaptation des cellules contenant des champs input */
+  table td input {
+    width: 100%; /* Largeur complète pour les champs input */
+    font-size: 14px; /* Taille de texte réduite */
+  }
+
+  /* Ajuste la taille du conteneur du tableau */
+  .table-container {
+    max-width: 100%; /* Permet au tableau de prendre toute la largeur */
+    padding: 10px;
+  }
+
+  /* Ajuste le titre dans le formulaire */
+  .form--header-title {
+    font-size: 1.2rem; /* Taille de police plus petite */
+  }
+
+  /* Rendre les zones de texte plus larges et plus adaptées aux petits écrans */
+  textarea {
+    width: 100%; /* Largeur complète */
+    font-size: 14px; /* Taille du texte réduite */
+  }
+
+  /* Ajoute un défilement horizontal si le tableau dépasse la largeur de l'écran */
+  .table-container {
+    overflow-x: auto; /* Ajoute un défilement horizontal */
+  }
+
+  /* Adapter la largeur du formulaire lorsque le conteneur est plus petit */
+  .step-container {
+    width: 100%; /* Réduit la taille du conteneur à 100% */
+  }
+  
+  /* Réduit la taille du champ de saisie des étapes du formulaire */
+  .step {
+    width: 20%; /* Réduit la largeur des étapes */
+    font-size: 12px; /* Réduit la taille de la police */
+  }
+
+  /* Adaptation des boutons dans le groupe de boutons */
+  .button-group {
+    flex-direction: column; /* Dispose les boutons en colonne */
+    align-items: stretch; /* Aligne les boutons en largeur complète */
+  }
 }
