@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextButtons = document.querySelectorAll(".btn-next");
     const prevButtons = document.querySelectorAll(".btn-prev");
     const stepContainer = document.querySelector(".step-container");
-
+    const items = document.querySelectorAll(".items");
     let currentStep = 0;
 
     const updateStep = (step) => {
@@ -16,10 +16,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Ajuster la largeur du fieldset pour l'étape 2
-        if (step === 1) {
+        if ((step === 1) || (step === 3)) {
             stepContainer.classList.add("wide");
         } else {
             stepContainer.classList.remove("wide");
+        }
+        if (step === 3) {
+            stepContainer.classList.add("left");
+        } else {
+            stepContainer.classList.remove("left");
         }
     };
 

@@ -11,10 +11,12 @@
         document.addEventListener("DOMContentLoaded", () => {
             const année = new Date().getFullYear();
             const annéeC = "Prix " + année;
-        
+            const annéeC2 = "Facture " + année;
             const annéeCourant = document.getElementById("annéeCourant");
+            const annéeCourant2 = document.getElementById('annéeC');
             if (annéeCourant) {
                 annéeCourant.textContent = annéeC; // Mise à jour du texte
+                annéeCourant2.textContent = annéeC2;
             }
         });
             function montantG() {
@@ -133,7 +135,60 @@
                     <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
                 </div>
                 <table>
-                    <th>Producteur</th>
+                    <tr>
+                        <th></th>
+                        <th>Consommateur</th>
+                        <th></th>
+                        <th>Producteur</th>
+                    </tr>
+                    <tr>
+                        <td>Consommation Actuelle (kwH/an)</td>
+                        <td><input type="text" id="consActuelle"></td>
+                        <td>Capacité de production (Kwh/an)</td>
+                        <td><input type="text" id="capaciteProduction"></td>
+                    </tr>
+                    <tr>
+                        <td id="annéeC">Facture 20</td>
+                        <td><input type="text" id="factAct" readonly></td>
+                        <td>Puissance Installation (KwC)</td>
+                        <td><input type="text" id="puisInsta"></td>
+                    </tr>
+                    <tr>
+                        <td>Facture 2030</td>
+                        <td><input type="text" id="fact2030" readonly></td>
+                        <td>Nombre de panneau (€)</td>
+                        <td><input type="text" id="nbPanneau" placeholder=""></td>
+                    </tr>
+                    <tr>
+                        <td>Facture 2035</td>
+                        <td><input type="text" id="fact2035" readonly></td>
+                        <td>Nombre de batteries (€)</td>
+                        <td><input type="text" id="nbBatterie"></td>
+                    </tr>
+                    <tr>
+                        <td>Coût sur 10 ans</td>
+                        <td><input type="text" id="cout10" readonly></td>
+                        <td>Coût Global</td>
+                        <td><input type="text" id="coutGlobale" readonly></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Prime Autoconsommation</td>
+                        <td><input type="text" id="primeAutoC" readonly></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Reste à charge (dont TVA)</td>
+                        <td><input type="text" id="racTVA" readonly></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Reste à charge (HT)</td>
+                        <td><input type="text" id="racHT" readonly></td>    
+                    </tr>
                 </table>
                 <button type="button" class="form__btn btn-prev">Précédent</button>
                 <button type="button" class="form__btn btn-submit">Valider</button>
