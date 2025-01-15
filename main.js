@@ -110,6 +110,7 @@ async function initDatabase() {
                 partAcheminement DECIMAL(15,2),
                 CTA_CSPE DECIMAL(15,2),
                 TVA DECIMAL(4,2),
+                montantGlobalTA DECIMAL(15,2),
                 motivationProjet VARCHAR(500),
                 refusProjet VARCHAR(500),
                 SIRET VARCHAR(50) NOT NULL,
@@ -142,7 +143,7 @@ async function initDatabase() {
                 coutBatterie DECIMAL(15,2),
                 primeAutoCo DECIMAL(15,2),
                 RAC VARCHAR(50),
-                dateBilan VARCHAR(50),
+                dateBilan DATE DEFAULT CURRENT_TIMESTAMP,
                 economie25a VARCHAR(50),
                 graphiqueF VARCHAR(150),
                 numCo INTEGER NOT NULL,
@@ -240,23 +241,47 @@ ipcMain.handle('login', async (event, username, password) => {
     const isValid = await verifyPassword(username, password);
     return isValid;
 });
-async function insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET){
-    const req = dbBCE.prepare('INSERT INTO bilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?)')
-    req.run(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET,numCon)
+async function insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET){
+    const req = dbBCE.prepare('INSERT INTO bilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?)')
+    req.run(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCon)
 }
 
-ipcMain.handle('insertBilan',async(event,necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET)=>{
+ipcMain.handle('insertBilan',async(event,necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET)=>{
     try {
-        await insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET)
+        await insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET)
         return 'Bilan ajouté avec succès';
     } catch(err){
         console.error('Erreur lors de l\'insertion du bilan : ',err)
         throw new Error('Erreur lors de l\'ajout du bilan') 
     }
 })
-async function insertSimulationClient(){
+async function insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan){
+    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCO,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    req.run(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCon,numBilan)
 
 }
+ipcMain.handle('inserSimulationClient',async(event,prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan)=>{
+    try {
+        await insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan);
+        return 'Simulation ajouté avec succès';
+    } catch (err){
+        console.error('Erreur lors de l\'insertion de la simulation : ',err)
+        throw new Error('Erreur lors de l\'ajout de la simulation client')
+    }
+})
+function selectNumBilan(SIRET){
+    dbBCE.prepare('SELECT numBilan FROM bilan WHERE SIRET = ? ORDER BY numBilan DESC LIMIT 1');
+    req.run(SIRET);
+}
+ipcMain.handle('selectNumBilan',async(event,SIRET) => {
+    try {
+        await selectNumBilan(SIRET);
+        return "Numéro récupéré avec succès";
+    } catch (err) {
+        console.error('Erreur lors de la selection du numéro de bilan : ',err)
+        throw new Error('Erreur lors de la récupération du numéro de bilan')
+    }
+})   
 function clearDatabase() {
     try {
         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
@@ -276,15 +301,19 @@ function clearDatabase() {
     }
 }
 
+ipcMain.on('open-link', (event, url) => {
+    console.log('URL reçue pour ouvrir un lien externe :', url);
+    shell.openExternal(url).catch((err) => {
+        console.error('Erreur lors de l\'ouverture du lien externe :', err);
+    });
+});
 
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
   createWindow()
   clearDatabase();  
   
-  ipcMain.on('open-link', (event, url) => {
-    shell.openExternal(url);
-});
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

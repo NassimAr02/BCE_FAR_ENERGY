@@ -1,14 +1,20 @@
 const { ipcRenderer } = require('electron');
-
+const { shell } = require("electron");
 // Écoutez l'événement 'send-data' du Main Process
 ipcRenderer.on('send-data', (event, data) => {
     // Affichez les données dans la console du navigateur
     console.log(`Données de la table ${data.tableName}:`, data.rows);
 });
-// renderer.js
-document.getElementById('openTabButton').addEventListener('click', function() {
-    window.electron.openLink('https://re.jrc.ec.europa.eu/pvg_tools/fr/');
+
+document.getElementById('openLinkButton').addEventListener('click', () => {
+    const url = 'https://re.jrc.ec.europa.eu/pvg_tools/fr/';
+    console.log('Bouton cliqué, ouverture du lien :', url);
+    window.electron.openLink(url);
 });
+
+
+// renderer.js
+
 
 // const Chart = require('chart.js'); // Charger Chart.js localement
 

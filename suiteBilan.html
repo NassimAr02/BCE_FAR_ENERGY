@@ -51,7 +51,7 @@
                 document.getElementById('annuel2030').value =(consoKwH * prix2030).toFixed(2)
                 document.getElementById('annuel2035').value = (consoKwH * prix2035).toFixed(2)
             }
-
+            
             function remplirChampF() {
                 const consActuelle = parseFloat(document.getElementById('consActuelle').value)
                 const prixC = parseFloat(document.getElementById('prixCourant').value)
@@ -78,6 +78,17 @@
                 const racHTvalue = racTVAvalue*0.8
                 racHT.value = racHTvalue.toFixed(2)
             }
+            document.addEventListener("DOMContentLoaded", () => {
+                document.body.addEventListener('click', (event) => {
+                    if (event.target && event.target.id === 'openTabButton') {
+                        const url = 'https://re.jrc.ec.europa.eu/pvg_tools/fr/';
+                        console.log('Bouton cliqué, ouverture du lien :', url);
+                        window.electron.openLink(url);
+                    }
+                });
+            });
+       
+
     </script>
     <main>
         <fieldset class="step-container">
@@ -164,6 +175,7 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
                 </div>
+                
                 <button type="button" id="openTabButton"><i class="fas fa-globe"></i></button>
                 <table>
                     <tr>
@@ -221,6 +233,10 @@
                         <td><input type="text" id="racHT" readonly></td>    
                     </tr>
                 </table>
+                <div style="width: 80%; margin: 0 auto;">
+                    <canvas id="chartC"></canvas>
+                    <canvas id="chartP"></canvas>
+                </div>
                 <button type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
                 <button type="button" class="form__btn btn-submit"><i class="fas fa-check"></i></button>
             </form>    

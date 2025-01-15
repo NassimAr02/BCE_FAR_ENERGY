@@ -11,5 +11,10 @@ contextBridge.exposeInMainWorld('electron', {
         natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant),
     insertRepresentantClient: (SIRET,nomR,prenomR,telR,emailR) => ipcRenderer.invoke("insertRepresentantClient",SIRET,nomR,prenomR,telR,emailR),
     insertBilan: (necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET) => ipcRenderer.invoke("insertBilan",necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,motivationProjet,refusProjet,SIRET),
-    openLink: (url) => ipcRenderer.send('open-link', url)
+    openLink: (url) => {
+        console.log('URL envoyée à openLink :', url);
+        ipcRenderer.send('open-link', url);
+    },
+    insertSimulationClient: (prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan) => ipcRenderer.invoke("insertSimulationClient",prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan),
+    selectNumBilan: (SIRET) => ipcRenderer.invoke("selectNumBilan",SIRET)
 });
