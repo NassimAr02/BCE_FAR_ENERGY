@@ -1,4 +1,4 @@
-const Chart = require('chart.js');
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const steps = document.querySelectorAll(".step");
@@ -80,11 +80,18 @@ document.addEventListener("DOMContentLoaded", () => {
         let primeAutoCo = document.getElementById("primeAutoC").value;
         let RAC = document.getElementById("racTVA").value;
         let racHT = document.getElementById("racHT").value;
-        
+        let numBilan = selectNumBilan(SIRET);
 
         try {
+            let numBilan = await window.electron.selectNumBilan(SIRET);
+
+            if (!numBilan) {
+                console.error("Aucun numéro de bilan trouvé.");
+                alert("Erreur : Aucun bilan trouvé pour ce SIRET.");
+                return;
+            }
             await window.electron.insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd
-                ,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,racHT
+                ,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,racHT,numBilan
             )
             console.log("Simulation Client ajouté avec succès");
         } catch (err) {
@@ -92,12 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
             throw new Error("Echec de l'insertion de la simulation client")
         }
     }
-    function genererGraphique() {
-        let factAct = document.getElementById("factAct").value;
-        let fact2030 = document.getElementById("fact2030").value;
-        let fact2035 =document.getElementById("fact2035").value;
-        let coutMoyen = (parseFloat(factAct) + parseFloat(fact2030) + parseFloat(fact2035))/3
-    }
+    
+    
     // Soumission du formulaire
     document.querySelector(".btn-submit").addEventListener("click", async (event) => {
         event.preventDefault();
@@ -106,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await insertBilan();
             await insertSimulationClient();
             alert("Formulaire soumis avec succès !");
-            window.location.href = `suiteBilan.html?siret=${encodeURIComponent(numSIRET)}`;
+            window.location.href = `accueilConnecté.html`;
         } catch (err) {
             alert(err.message);
         }

@@ -1,11 +1,10 @@
-
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const Database = require('better-sqlite3');
 const argon2 = require('argon2');
 const { shell } = require('electron');
-
+const Chart = require('chart.js');
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
 let dbBCE;
 
@@ -15,7 +14,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-        nodeIntegration: false,
+        nodeIntegration: true,
         contextIsolation: true, 
         preload: path.join(__dirname, 'preload.js')
     }
@@ -49,7 +48,7 @@ const createWindow = () => {
   initDatabase();
 }
 
-    
+   
 
 
 
@@ -256,7 +255,7 @@ ipcMain.handle('insertBilan',async(event,necessite,consoKwH,montantGlobal,abo_co
     }
 })
 async function insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan){
-    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCO,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCo,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     req.run(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCon,numBilan)
 
 }
@@ -269,19 +268,27 @@ ipcMain.handle('inserSimulationClient',async(event,prixKwH2024,prixKwH2030,prixK
         throw new Error('Erreur lors de l\'ajout de la simulation client')
     }
 })
+
 function selectNumBilan(SIRET){
-    dbBCE.prepare('SELECT numBilan FROM bilan WHERE SIRET = ? ORDER BY numBilan DESC LIMIT 1');
-    req.run(SIRET);
+    const req = dbBCE.prepare('SELECT numBilan FROM bilan WHERE SIRET = ? ORDER BY numBilan DESC LIMIT 1');
+
+    const result = req.get(SIRET);
+
+    return result ? result.numBilan : null;
 }
-ipcMain.handle('selectNumBilan',async(event,SIRET) => {
+ipcMain.handle('selectNumBilan', async (event, SIRET) => {
     try {
-        await selectNumBilan(SIRET);
-        return "Numéro récupéré avec succès";
+        const numBilan = selectNumBilan(SIRET); // Appelle la fonction pour récupérer le numéro de bilan
+        if (numBilan) {
+            return numBilan; // Retourne le numéro de bilan trouvé
+        } else {
+            throw new Error(`Aucun bilan trouvé pour le SIRET ${SIRET}`);
+        }
     } catch (err) {
-        console.error('Erreur lors de la selection du numéro de bilan : ',err)
-        throw new Error('Erreur lors de la récupération du numéro de bilan')
+        console.error('Erreur lors de la sélection du numéro de bilan : ', err.message);
+        throw err; // Renvoie l'erreur pour la gérer côté frontend
     }
-})   
+});  
 function clearDatabase() {
     try {
         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits

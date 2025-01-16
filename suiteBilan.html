@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style2.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Analyse Facture</title>
 </head>
 <body>
@@ -78,6 +79,7 @@
                 const racHTvalue = racTVAvalue*0.8
                 racHT.value = racHTvalue.toFixed(2)
             }
+            
             document.addEventListener("DOMContentLoaded", () => {
                 document.body.addEventListener('click', (event) => {
                     if (event.target && event.target.id === 'openTabButton') {
@@ -87,7 +89,7 @@
                     }
                 });
             });
-       
+            
 
     </script>
     <main>
@@ -233,10 +235,134 @@
                         <td><input type="text" id="racHT" readonly></td>    
                     </tr>
                 </table>
-                <div style="width: 80%; margin: 0 auto;">
-                    <canvas id="chartC"></canvas>
-                    <canvas id="chartP"></canvas>
-                </div>
+                
+                <canvas id="chartC"></canvas>
+                <canvas id="chartP"></canvas>
+                <button type="button" id="genererChart">Générer le graphique</button>
+                <script >
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const generateButton = document.getElementById('genererChart');
+                        
+                        generateButton.addEventListener('click', () => {
+                            genererChart();
+                        });
+                    
+                        function genererChart() {
+
+                            const ctx1 = document.getElementById('chartC').getContext('2d');
+                            const ctx2 = document.getElementById('chartP').getContext('2d');
+
+                            if (window.chart1) {
+                                window.chart1.destroy();
+                            }
+                            if (window.chart2) {
+                                window.chart2.destroy();
+                            }
+                            
+                            let factAct = document.getElementById("factAct").value;
+                            let fact2030 = document.getElementById("fact2030").value;
+                            let fact2035 = document.getElementById("fact2035").value;
+                            let consActuelle = document.getElementById("consActuelle").value;
+                            let MTA = document.getElementById("montantGlobalTot").value;
+                            let capaciteProduction = document.getElementById("capaciteProduction").value;
+                            let prixC = document.getElementById("prixCourant").value;
+                            let prix2030 = document.getElementById("prix2030").value;
+                            let prix2035 = document.getElementById("prix2035").value;
+                            let racTVA  = document.getElementById("racTVA").value;
+                            let coutMoyen = (parseFloat(factAct) + parseFloat(fact2030) + parseFloat(fact2035)) / 3;
+                            let cout10 = coutMoyen * 10;
+                            let cout25 = coutMoyen * 25;
+                    
+                            let consR = parseFloat(consActuelle) - parseFloat(capaciteProduction);
+                            let consP = (consR * parseFloat(prixC)) + parseFloat(racTVA);
+                            let cons2030 = consR * parseFloat(prix2030);
+                            let cons2035 = consR * parseFloat(prix2035);
+                            let consM = (consP + cons2030 + cons2035) / 3;
+                            let consP10 = consM * 10;
+                            let consP25 = consM * 25;
+                            let partMTA = parseFloat(MTA) / parseFloat(factAct);
+                            let MTAfactP = partMTA * parseFloat(factAct);
+                            let MTAcout10 = partMTA * cout10;
+                            let MTAcout25 = partMTA * cout25;
+                    
+                            let MTAcoutP = partMTA * consP;
+                            let MTAcout2030 = partMTA * consP10;
+                            let MTAcout2035 = partMTA * consP25;
+                    
+                            // Creating the first chart
+                            new Chart(ctx1, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Actuel', '10 ans', '25 ans'],
+                                    datasets: [
+                                        {
+                                            label: 'Coût consommateur sur 25 ans+ (€)',
+                                            data: [factAct, cout10, cout25],
+                                            borderColor: 'rgba(255, 1, 0, 1)',
+                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        },
+                                        {
+                                            label: 'Coût Acheminement + taxes sur 25 ans (€)',
+                                            data: [MTAfactP, MTAcout10, MTAcout25],
+                                            borderColor: 'rgba(255, 167, 69, 1)',
+                                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                    
+                            // Creating the second chart
+                            new Chart(ctx2, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Actuel', '10 ans', '25 ans'],
+                                    datasets: [
+                                        {
+                                            label: 'Coût producteur sur 25 ans (€)',
+                                            data: [consP, consP10, consP25],
+                                            borderColor: 'rgba(50, 255, 32, 1)',
+                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        },
+                                        {
+                                            label: 'Coût Acheminement + taxes sur 25 ans (€)',
+                                            data: [MTAcoutP, MTAcout2030, MTAcout2035],
+                                            borderColor: 'rgba(167, 255, 69, 1)',
+                                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                </script>
                 <button type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
                 <button type="button" class="form__btn btn-submit"><i class="fas fa-check"></i></button>
             </form>    

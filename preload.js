@@ -16,5 +16,8 @@ contextBridge.exposeInMainWorld('electron', {
         ipcRenderer.send('open-link', url);
     },
     insertSimulationClient: (prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan) => ipcRenderer.invoke("insertSimulationClient",prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan),
-    selectNumBilan: (SIRET) => ipcRenderer.invoke("selectNumBilan",SIRET)
+    selectNumBilan: (SIRET) => ipcRenderer.invoke("selectNumBilan",SIRET),
+    genererChart: (factAct, fact2030, fact2035, consActuelle, MTA, capaciteProduction, prixC, prix2030, prix2035, racTVA) => {
+        return ipcRenderer.invoke("genererChart", factAct, fact2030, fact2035, consActuelle, MTA, capaciteProduction, prixC, prix2030, prix2035, racTVA);
+    }
 });
