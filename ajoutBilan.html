@@ -29,7 +29,10 @@
                 <input type="text" id="prenomR" placeholder="Prénom du représentant" required>
                 <input type="tel" id="telR" placeholder="Téléphone du représentant" pattern="\d{10}" required>
                 <input type="email" id="emailR" placeholder="Email du représentant" required>
-                <button type="button" class="form__btn btn-next">Suivant</button>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-next">Suivant</button>
+                </div>
+                
             </form>
 
             <!-- Étape 2 -->
@@ -44,8 +47,11 @@
                 <input type="text" id="effectifEntreprise" placeholder="Effectif de l'entreprise" required>
                 <input type="text" id="horaireOuverture" placeholder="Horaire d'ouverture" required>
                 <input type="date" id="dateCreation" placeholder="Date de création" required>
-                <button type="button" class="form__btn btn-prev">Précédent</button>
-                <button type="button" class="form__btn btn-next">Suivant</button>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev">Précédent</button>
+                    <button type="button" class="form__btn btn-next">Suivant</button>
+                </div>
+                
             </form>
 
             <!-- Étape 3 -->
@@ -67,8 +73,12 @@
                     <option value="Revente du surplus">Revente du surplus</option>
                     <option value="Revente totale">Revente totale</option>
                 </select>
-                <button type="button" class="form__btn btn-prev">Précédent</button>
-                <button type="button" class="form__btn btn-next">Suivant</button>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev">Précédent</button>
+                    <button type="button" class="form__btn btn-next">Suivant</button>
+
+                </div>
+                
             </form>
             <form class="form" id="form-step-4">
                 <div class="form--header-container">
@@ -83,8 +93,10 @@
                         <option value="Triphasé">Triphasé</option>
                     </select>
                 </label>
-                <button type="button" class="form__btn btn-prev">Précédent</button>
-                <button type="button" class="form__btn btn-submit">Valider</button>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev">Précédent</button>
+                    <button type="button" class="form__btn btn-submit">Valider</button>
+                </div>
             </form>
         </fieldset>
     </main>

@@ -31,13 +31,13 @@
 
                 const montantGl = acheminement + CTA_CSPE + TVA;
                 const montantGlobalTot = document.getElementById("montantGlobalTot");
-                const montant10 = montantGl * 10
+                const montant10 = (montantGl * 10).toFixed(2)
                 if (montantGlobalTot) {
                     montantGlobalTot.value = montantGl.toFixed(2); // Formate en 2 décimales
                 }
                 document.getElementById('montantTaxes10').value = montant10
             }
-        
+            
             function calculCout(){
                 const consoKwH =parseFloat(document.getElementById('consoKwH').value)
                 const prixC = parseFloat(document.getElementById('prixCourant').value)
@@ -122,7 +122,10 @@
                 <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()">
                 <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
                 <input type="text" id="montantGlobalTot" placeholder="Montant Global (Taxes + Achemin. + TVA)" readonly>
-                <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right"></i></button>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-next" id="Suivant"><i class="fas fa-arrow-right"></i></button>
+                </div>
+                
             </form>
             <form class="form" id="form-step-2">
                 <div class="form--header-container">
@@ -157,9 +160,11 @@
                 </table>
                 <label for="montantTaxes10">Montant des taxes sur 10 ans (dont acheminement) :</label>
                 <input type="text" id="montantTaxes10" readonly>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev" id="Précédent"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="form__btn btn-next" id="Suivant"><i class="fas fa-arrow-right"></i></button>
+                </div>
                 
-                <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left"></i></button>
-                <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right"></i></button>
 
             </form>
             <form class="form" id="form-step-3">
@@ -173,8 +178,12 @@
                 </div>
                 <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet"></textarea>
                 <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
-                <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left"></i></button>
-                <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right"></i></button>
+
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant"></i></button>
+                </div>
+                
 
             </form>
             <form class="form" id="form-step-4">
@@ -240,27 +249,62 @@
                     </tr>
                 </table>
                 
-                <canvas id="chartC"></canvas>
-                <button type="button" id="genererChart">Générer le graphique</button>
-                <script >
+                <!-- Fenêtre modale -->
+                <div id="modalChart" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <canvas id="chartC"></canvas>
+                    </div>
+                </div>
+                <div class="parent-container">
+                    <button id="Précédent" type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" id="genererChart">Générer le graphique</button>
+                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Suivant"></i></button>
+                </div>
+                <script>
                     document.addEventListener('DOMContentLoaded', () => {
                         const generateButton = document.getElementById('genererChart');
-                        
+
                         generateButton.addEventListener('click', () => {
                             genererChart();
                         });
-                    
+
+                        // Fonction pour générer un graphique dans une modale
                         function genererChart() {
+                            // Créer un nouvel élément pour la modale
+                            const modal = document.createElement('div');
+                            modal.classList.add('modal');
 
-                            const ctx1 = document.getElementById('chartC').getContext('2d');
+                            const modalContent = document.createElement('div');
+                            modalContent.classList.add('modal-content');
+                            
+                            const closeBtn = document.createElement('span');
+                            closeBtn.classList.add('close');
+                            closeBtn.innerHTML = '&times;';
 
+                            const canvas = document.createElement('canvas');
+                            canvas.id = 'chartC';
+
+                            // Ajouter le contenu à la modale
+                            modalContent.appendChild(closeBtn);
+                            modalContent.appendChild(canvas);
+                            modal.appendChild(modalContent);
+
+                            // Ajouter la modale au body
+                            document.body.appendChild(modal);
+
+                            // Afficher la modale
+                            modal.style.display = "block";
+
+                            // Initialiser le graphique dans le canvas
+                            const ctx1 = canvas.getContext('2d');
+
+                            // Si un graphique existe déjà, le détruire avant de créer un nouveau
                             if (window.chart1) {
                                 window.chart1.destroy();
+                                window.chart1 = null; // Assurez-vous de bien libérer la référence
                             }
-                            if (window.chart2) {
-                                window.chart2.destroy();
-                            }
-                            
+
                             let factAct = document.getElementById("factAct").value;
                             let fact2030 = document.getElementById("fact2030").value;
                             let fact2035 = document.getElementById("fact2035").value;
@@ -277,17 +321,16 @@
                             prixMoyen = prixMoyen / 3;
                             let cout10 = coutMoyen * 10;
                             let cout25 = coutMoyen * 25;
-                            let MTA10=parseFloat(MTA)*10
-                            let MTA25=parseFloat(MTA)*25
+                            let MTA10 = parseFloat(MTA) * 10;
+                            let MTA25 = parseFloat(MTA) * 25;
                             let consAnnee1 = (parseFloat(consActuelle) - parseFloat(capaciteProduction));
                             let consR = (consAnnee1 * prixC) + racTVA;
                             let cons = prixMoyen * consAnnee1;
                             let cons10 = cons * 10;
                             let cons25 = cons * 25;
 
-                    
-                            // Creating the first chart
-                            new Chart(ctx1, {
+                            // Créer un nouveau graphique
+                            window.chart1 = new Chart(ctx1, {
                                 type: 'line',
                                 data: {
                                     labels: ['Actuel', '10 ans', '25 ans'],
@@ -302,7 +345,7 @@
                                             borderWidth: 2
                                         },
                                         {
-                                            label: 'Coût additionnels(Achemin.,TVA,CTA+CSPE) sur 25 ans (€)',
+                                            label: 'Coût consommateur additionnels (Achemin.,TVA,CTA+CSPE) sur 25 ans (€)',
                                             data: [MTA, MTA10, MTA25],
                                             borderColor: 'rgba(200, 90, 0, 1)',
                                             backgroundColor: 'rgba(0, 123, 255, 0.2)',
@@ -330,13 +373,26 @@
                                     }
                                 }
                             });
-                    
-                            
+
+                            // Ajouter un événement pour fermer la modale
+                            closeBtn.addEventListener('click', () => {
+                                modal.style.display = "none";
+                                document.body.removeChild(modal); // Supprimer la modale du DOM
+                            });
+
+                            // Fermer la modale si l'utilisateur clique en dehors de la fenêtre modale
+                            window.addEventListener('click', (event) => {
+                                if (event.target === modal) {
+                                    modal.style.display = "none";
+                                    document.body.removeChild(modal); // Supprimer la modale du DOM
+                                }
+                            });
                         }
                     });
+
                 </script>
-                <button type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
-                <button type="button" class="form__btn btn-submit"><i class="fas fa-check"></i></button>
+                
+                
             </form>    
         </fieldset>
     </main>
