@@ -123,7 +123,7 @@
                 <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
                 <input type="text" id="montantGlobalTot" placeholder="Montant Global (Taxes + Achemin. + TVA)" readonly>
                 <div class="parent-container">
-                    <button type="button" class="form__btn btn-next" id="Suivant"><i class="fas fa-arrow-right"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
                 </div>
                 
             </form>
@@ -161,8 +161,8 @@
                 <label for="montantTaxes10">Montant des taxes sur 10 ans (dont acheminement) :</label>
                 <input type="text" id="montantTaxes10" readonly>
                 <div class="parent-container">
-                    <button type="button" class="form__btn btn-prev" id="Précédent"><i class="fas fa-arrow-left"></i></button>
-                    <button type="button" class="form__btn btn-next" id="Suivant"><i class="fas fa-arrow-right"></i></button>
+                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
                 </div>
                 
 
@@ -180,8 +180,8 @@
                 <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
 
                 <div class="parent-container">
-                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent"></i></button>
-                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant"></i></button>
+                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
                 </div>
                 
 
@@ -258,8 +258,8 @@
                 </div>
                 <div class="parent-container">
                     <button id="Précédent" type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
-                    <button type="button" id="genererChart">Générer le graphique</button>
-                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Suivant"></i></button>
+                    <button type="button" id="genererChart"><i class="fas fa-chart-line" title="Générer le graphique"></i></button>
+                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Suivant" title="Suivant"></i></button>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {

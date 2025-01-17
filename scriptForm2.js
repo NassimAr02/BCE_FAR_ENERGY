@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const url = new URL(window.location.href);
-    const SIRET = url.searchParams.get("siret")
+    
+    console.log
     async function insertBilan(){
         let necessite = document.getElementById("besoin").value;
         let consActuelle = document.getElementById("consActuelle").value;
@@ -54,10 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
         let partAcheminement = document.getElementById("partAcheminement").value;
         let CTA_CSPE = document.getElementById("CTA_CSPE").value;
         let TVA = document.getElementById("TVA").value;
-        let montantGlobalTA = document.getElementById("montantGlobalTA").value;
+        let montantGlobalTA = document.getElementById("montantGlobalTot").value;
         let motivationProjet = document.getElementById("motivationProjet").value;
         let refusProjet = document.getElementById("refusProjet").value;
-        
+        const url = new URL(window.location.href);
+        const SIRET = url.searchParams.get("siret")
+        console.log("Numéro de Siret : ", SIRET);
         try {
             await window.electron.insertBilan(necessite ,consActuelle, consoKwH, montantGlobal, abo_Conso,partAcheminement,
                 CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET);
@@ -69,10 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
     async function insertSimulationClient() {
-        let prixKwH2024 = document.getElementById("prixKwH2024").value;
-        let prixKwH2030 = document.getElementById("prixKwH2030").value;
-        let prixKwH2035 = document.getElementById("prixKwH2035").value;
-        let montant10A =  document.getElementById("montant10A").value;
+        let prixKwH2024 = document.getElementById("prixCourant").value;
+        let prixKwH2030 = document.getElementById("prix2030").value;
+        let prixKwH2035 = document.getElementById("prix2035").value;
+        let montant10A =  document.getElementById("montantTaxes10").value;
         let capacitéProd = document.getElementById("capaciteProduction").value;
         let puissanceInsta = document.getElementById("puisInsta").value;
         let coutPanneau = document.getElementById("nbPanneau").value;
