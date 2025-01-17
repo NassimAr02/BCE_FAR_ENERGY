@@ -79,7 +79,11 @@
                 const racHTvalue = racTVAvalue*0.8
                 racHT.value = racHTvalue.toFixed(2)
             }
-            
+            function coutG(){
+                let bat =document.getElementById('nbBatterie').value
+                let panneau = document.getElementById('nbPanneau').value
+                document.getElementById('coutGlobale').value = (parseFloat(bat) + parseFloat(panneau)).toFixed(2)
+            }
             document.addEventListener("DOMContentLoaded", () => {
                 document.body.addEventListener('click', (event) => {
                     if (event.target && event.target.id === 'openTabButton') {
@@ -112,7 +116,7 @@
                 </div>
                 <br>
                 <input type="text" id="consoKwH" placeholder="Consommation (KwH)">
-                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle">
+                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle Totale">
                 <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)">
                 <input type="text" id="partAcheminement" placeholder="Dont part Acheminement (HT)" oninput="montantG()">
                 <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()">
@@ -208,13 +212,13 @@
                         <td>Facture 2035</td>
                         <td><input type="text" id="fact2035" readonly></td>
                         <td>Nombre de batteries (€)</td>
-                        <td><input type="text" id="nbBatterie" ></td>
+                        <td><input type="text" id="nbBatterie" oninput="coutG()"></td>
                     </tr>
                     <tr>
                         <td>Coût sur 10 ans</td>
                         <td><input type="text" id="cout10" readonly></td>
                         <td>Coût Global</td>
-                        <td><input type="text" id="coutGlobale" ></td>
+                        <td><input type="text" id="coutGlobale" readonly></td>
                     </tr>
                     <tr>
                         <td></td>
@@ -237,7 +241,6 @@
                 </table>
                 
                 <canvas id="chartC"></canvas>
-                <canvas id="chartP"></canvas>
                 <button type="button" id="genererChart">Générer le graphique</button>
                 <script >
                     document.addEventListener('DOMContentLoaded', () => {
@@ -250,7 +253,6 @@
                         function genererChart() {
 
                             const ctx1 = document.getElementById('chartC').getContext('2d');
-                            const ctx2 = document.getElementById('chartP').getContext('2d');
 
                             if (window.chart1) {
                                 window.chart1.destroy();
@@ -270,24 +272,19 @@
                             let prix2035 = document.getElementById("prix2035").value;
                             let racTVA  = document.getElementById("racTVA").value;
                             let coutMoyen = (parseFloat(factAct) + parseFloat(fact2030) + parseFloat(fact2035)) / 3;
+                            let prixMoyen = parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035);
+                            
+                            prixMoyen = prixMoyen / 3;
                             let cout10 = coutMoyen * 10;
                             let cout25 = coutMoyen * 25;
-                    
-                            let consR = parseFloat(consActuelle) - parseFloat(capaciteProduction);
-                            let consP = (consR * parseFloat(prixC)) + parseFloat(racTVA);
-                            let cons2030 = consR * parseFloat(prix2030);
-                            let cons2035 = consR * parseFloat(prix2035);
-                            let consM = (consP + cons2030 + cons2035) / 3;
-                            let consP10 = consM * 10;
-                            let consP25 = consM * 25;
-                            let partMTA = parseFloat(MTA) / parseFloat(factAct);
-                            let MTAfactP = partMTA * parseFloat(factAct);
-                            let MTAcout10 = partMTA * cout10;
-                            let MTAcout25 = partMTA * cout25;
-                    
-                            let MTAcoutP = partMTA * consP;
-                            let MTAcout2030 = partMTA * consP10;
-                            let MTAcout2035 = partMTA * consP25;
+                            let MTA10=parseFloat(MTA)*10
+                            let MTA25=parseFloat(MTA)*25
+                            let consAnnee1 = (parseFloat(consActuelle) - parseFloat(capaciteProduction));
+                            let consR = (consAnnee1 * prixC) + racTVA;
+                            let cons = prixMoyen * consAnnee1;
+                            let cons10 = cons * 10;
+                            let cons25 = cons * 25;
+
                     
                             // Creating the first chart
                             new Chart(ctx1, {
@@ -296,7 +293,7 @@
                                     labels: ['Actuel', '10 ans', '25 ans'],
                                     datasets: [
                                         {
-                                            label: 'Coût consommateur sur 25 ans+ (€)',
+                                            label: 'Coût consommateur sur 25 ans (€)',
                                             data: [factAct, cout10, cout25],
                                             borderColor: 'rgba(255, 1, 0, 1)',
                                             backgroundColor: 'rgba(0, 123, 255, 0.2)',
@@ -305,10 +302,19 @@
                                             borderWidth: 2
                                         },
                                         {
-                                            label: 'Coût Acheminement + taxes sur 25 ans (€)',
-                                            data: [MTAfactP, MTAcout10, MTAcout25],
-                                            borderColor: 'rgba(255, 167, 69, 1)',
-                                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                                            label: 'Coût additionnels(Achemin.,TVA,CTA+CSPE) sur 25 ans (€)',
+                                            data: [MTA, MTA10, MTA25],
+                                            borderColor: 'rgba(200, 90, 0, 1)',
+                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        },
+                                        {
+                                            label: 'Coût en tant que producteur sur 25 ans (€)',
+                                            data: [consAnnee1, cons10, cons25],
+                                            borderColor: 'rgba(1, 200, 69, 1)',
+                                            backgroundColor: 'rgba(1,200, 69, 0.2)',
                                             fill: true,
                                             tension: 0.4,
                                             borderWidth: 2
@@ -325,41 +331,7 @@
                                 }
                             });
                     
-                            // Creating the second chart
-                            new Chart(ctx2, {
-                                type: 'line',
-                                data: {
-                                    labels: ['Actuel', '10 ans', '25 ans'],
-                                    datasets: [
-                                        {
-                                            label: 'Coût producteur sur 25 ans (€)',
-                                            data: [consP, consP10, consP25],
-                                            borderColor: 'rgba(50, 255, 32, 1)',
-                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                                            fill: true,
-                                            tension: 0.4,
-                                            borderWidth: 2
-                                        },
-                                        {
-                                            label: 'Coût Acheminement + taxes sur 25 ans (€)',
-                                            data: [MTAcoutP, MTAcout2030, MTAcout2035],
-                                            borderColor: 'rgba(167, 255, 69, 1)',
-                                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
-                                            fill: true,
-                                            tension: 0.4,
-                                            borderWidth: 2
-                                        }
-                                    ]
-                                },
-                                options: {
-                                    responsive: true,
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true
-                                        }
-                                    }
-                                }
-                            });
+                            
                         }
                     });
                 </script>
