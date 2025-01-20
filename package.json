@@ -3,17 +3,29 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "author": "",
+  "author": "Nassim Arrass",
   "license": "ISC",
-  "description": "",
+  "description": "Application de bureau pour les bilan de consommation énergétique",
   "devDependencies": {
-    "electron": "^33.3.1"
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/fuses": "^1.8.0",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8"
   },
   "dependencies": {
     "argon2": "^0.41.1",
     "better-sqlite3": "^11.7.2",
-    "chart.js": "^4.4.7"
+    "chart.js": "^4.4.7",
+    "electron-squirrel-startup": "^1.0.1"
   }
 }

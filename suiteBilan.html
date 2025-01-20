@@ -61,10 +61,13 @@
                 const factAct =document.getElementById('factAct')
                 const fact2030 = document.getElementById('fact2030')
                 const fact2035 = document.getElementById('fact2035')
+                
+
                 factAct.value = (consActuelle * prixC).toFixed(2)
                 fact2030.value = (consActuelle * prix2030).toFixed(2)
                 fact2035.value =(consActuelle * prix2035).toFixed(2)
                 
+
                 const moyenne = (parseFloat(factAct.value) + parseFloat(fact2030.value) + parseFloat(fact2035.value)) / 3;
                 document.getElementById('cout10').value = (moyenne*10).toFixed(2)
             }
@@ -78,6 +81,16 @@
                 const racHT = document.getElementById('racHT')
                 const racHTvalue = racTVAvalue*0.8
                 racHT.value = racHTvalue.toFixed(2)
+                const economie25a = document.getElementById('economie25a')
+
+                const capaciteProduction = parseFloat(document.getElementById("capaciteProduction").value);
+                const prixC = parseFloat(document.getElementById('prixCourant').value)
+                let prix2030 = document.getElementById("prix2030").value;
+                let prix2035 = document.getElementById("prix2035").value;
+                let prixMoyen = parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035)/ 3;
+                economie25a.value = ((prixMoyen * capaciteProduction) * 25).toFixed(2);
+                            
+                
             }
             function coutG(){
                 let bat =document.getElementById('nbBatterie').value
@@ -173,8 +186,8 @@
                 </div>
                 <label for="besoin">Estimez vous nécessaire d'agir ? </label>
                 <div id="besoin">
-                    <label for="besoinOui">Oui </label><input type="radio" name="besoin" id="besoinOui" value="true" checked>
-                    <label for="besoinNon">Non </label><input type="radio" name="besoin" id="besoinNon" value="false">
+                    <label><input type="radio" name="besoin" id="besoinOui" value="true" checked>Oui </label>
+                    <label><input type="radio" name="besoin" id="besoinNon" value="false">Non </label>
                 </div>
                 <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet"></textarea>
                 <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
@@ -242,8 +255,8 @@
                         <td><input type="text" id="racTVA" readonly></td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>Economie sur 25 ans</td>
+                        <td><input type="text" id="economie25a" readonly></td>
                         <td>Reste à charge (HT)</td>
                         <td><input type="text" id="racHT" readonly></td>    
                     </tr>
@@ -259,7 +272,7 @@
                 <div class="parent-container">
                     <button id="Précédent" type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
                     <button type="button" id="genererChart"><i class="fas fa-chart-line" title="Générer le graphique"></i></button>
-                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Suivant" title="Suivant"></i></button>
+                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Valider" title="Valider"></i></button>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {
@@ -308,13 +321,13 @@
                             let factAct = document.getElementById("factAct").value;
                             let fact2030 = document.getElementById("fact2030").value;
                             let fact2035 = document.getElementById("fact2035").value;
-                            let consActuelle = document.getElementById("consActuelle").value;
                             let MTA = document.getElementById("montantGlobalTot").value;
-                            let capaciteProduction = document.getElementById("capaciteProduction").value;
-                            let prixC = document.getElementById("prixCourant").value;
+                            const capaciteProduction = parseFloat(document.getElementById("capaciteProduction").value);
+                            const consActuelle = parseFloat(document.getElementById('consActuelle').value)
+                            const prixC = parseFloat(document.getElementById('prixCourant').value)
                             let prix2030 = document.getElementById("prix2030").value;
                             let prix2035 = document.getElementById("prix2035").value;
-                            let racTVA  = document.getElementById("racTVA").value;
+                            const racTVA  = parseFloat(document.getElementById("racTVA").value);
                             let coutMoyen = (parseFloat(factAct) + parseFloat(fact2030) + parseFloat(fact2035)) / 3;
                             let prixMoyen = parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035);
                             
@@ -323,12 +336,13 @@
                             let cout25 = coutMoyen * 25;
                             let MTA10 = parseFloat(MTA) * 10;
                             let MTA25 = parseFloat(MTA) * 25;
-                            let consAnnee1 = (parseFloat(consActuelle) - parseFloat(capaciteProduction));
+                            let consAnnee1 = (consActuelle - parseFloat(capaciteProduction));
                             let consR = (consAnnee1 * prixC) + racTVA;
                             let cons = prixMoyen * consAnnee1;
                             let cons10 = cons * 10;
                             let cons25 = cons * 25;
 
+                            console.log(consR, ' ',consAnnee1,' ',cons10,' ',cons25 )
                             // Créer un nouveau graphique
                             window.chart1 = new Chart(ctx1, {
                                 type: 'line',
@@ -355,7 +369,7 @@
                                         },
                                         {
                                             label: 'Coût en tant que producteur sur 25 ans (€)',
-                                            data: [consAnnee1, cons10, cons25],
+                                            data: [consR, cons10, cons25],
                                             borderColor: 'rgba(1, 200, 69, 1)',
                                             backgroundColor: 'rgba(1,200, 69, 0.2)',
                                             fill: true,

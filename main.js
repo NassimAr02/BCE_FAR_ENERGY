@@ -154,10 +154,10 @@ async function initDatabase() {
         `);
 
         // Exemple d'ajout d'un conseiller
-        const password = 'monMotDePasse';
-        const hash = await argon2.hash(password);
-        const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
-        stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
+        // const password = 'monMotDePasse';
+        // const hash = await argon2.hash(password);
+        // const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+        // stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
     } catch (err) {
         console.error('Erreur lors de l\'initialisation de la base de données :', err);
     }
@@ -241,7 +241,7 @@ ipcMain.handle('login', async (event, username, password) => {
     return isValid;
 });
 async function insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET){
-    const req = dbBCE.prepare('INSERT INTO bilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?)')
+    const req = dbBCE.prepare('INSERT INTO bilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
     req.run(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCon)
 }
 
@@ -254,19 +254,19 @@ ipcMain.handle('insertBilan',async(event,necessite,consoKwH,montantGlobal,abo_co
         throw new Error('Erreur lors de l\'ajout du bilan') 
     }
 })
-async function insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan){
-    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCo,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-    req.run(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numCon,numBilan)
+async function insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan){
+    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numCo,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    req.run(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numCon,numBilan)
 
 }
-ipcMain.handle('inserSimulationClient',async(event,prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan)=>{
+ipcMain.handle('insertSimulationClient',async(event,prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan)=>{
     try {
-        await insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,acheminement10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,dateBilan,economie25a,graphiqueF,numBilan);
+        await insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan);
         return 'Simulation ajouté avec succès';
     } catch (err){
         console.error('Erreur lors de l\'insertion de la simulation : ',err)
         throw new Error('Erreur lors de l\'ajout de la simulation client')
-    }
+    } 
 })
 
 function selectNumBilan(SIRET){
@@ -289,24 +289,24 @@ ipcMain.handle('selectNumBilan', async (event, SIRET) => {
         throw err; // Renvoie l'erreur pour la gérer côté frontend
     }
 });  
-function clearDatabase() {
-    try {
-        dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
+// function clearDatabase() {
+//     try {
+//         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
 
-        // Vider chaque table
-        dbBCE.exec('DELETE FROM Conseiller;');
-        dbBCE.exec('DELETE FROM Client;');
-        dbBCE.exec('DELETE FROM bilan;');
-        dbBCE.exec('DELETE FROM representantClient;');
-        dbBCE.exec('DELETE FROM simulationClient;');
+//         // Vider chaque table
+//         dbBCE.exec('DELETE FROM Conseiller;');
+//         dbBCE.exec('DELETE FROM Client;');
+//         dbBCE.exec('DELETE FROM bilan;');
+//         dbBCE.exec('DELETE FROM representantClient;');
+//         dbBCE.exec('DELETE FROM simulationClient;');
 
-        console.log("Toutes les données de la base de données ont été effacées.");
-    } catch (err) {
-        console.error("Erreur lors de l'effacement des données :", err);
-    } finally {
-        dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
-    }
-}
+//         console.log("Toutes les données de la base de données ont été effacées.");
+//     } catch (err) {
+//         console.error("Erreur lors de l'effacement des données :", err);
+//     } finally {
+//         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
+//     }
+// }
 
 ipcMain.on('open-link', (event, url) => {
     console.log('URL reçue pour ouvrir un lien externe :', url);

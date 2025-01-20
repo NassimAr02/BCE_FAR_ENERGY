@@ -44,11 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    
-    console.log
+
     async function insertBilan(){
-        let necessite = document.getElementById("besoin").value;
-        let consActuelle = document.getElementById("consActuelle").value;
+        let necessite = document.querySelector("input[name='besoin']:checked").value;
+        let consoKwH = document.getElementById("consActuelle").value;
         let montantGlobal = document.getElementById("montantGlobal").value;
         let abo_Conso = document.getElementById("abo_conso").value;
         let partAcheminement = document.getElementById("partAcheminement").value;
@@ -59,14 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
         let refusProjet = document.getElementById("refusProjet").value;
         const url = new URL(window.location.href);
         const SIRET = url.searchParams.get("siret")
-        console.log("Numéro de Siret : ", SIRET);
+        console.log("Numéro de Siret : ", SIRET,' ', necessite, ' ',consActuelle,' ',montantGlobal,' ',abo_Conso,' ',partAcheminement,' ', CTA_CSPE,' ', TVA, ' ',montantGlobalTA,' ',motivationProjet,' ',refusProjet);
         try {
-            await window.electron.insertBilan(necessite ,consActuelle, consoKwH, montantGlobal, abo_Conso,partAcheminement,
-                CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET);
+            await window.electron.insertBilan(necessite,consoKwH,montantGlobal,abo_Conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET);
             console.log("Bilan inséré avec succès");
         } catch (err) {
             console.error('Erreur lors de l\'insertion du bilan :', err);
-            throw new Error("Echec de l'insertion du bilan");
+            throw new Error("Echec de l'insertion du bilan"); 
         }
 
     }
@@ -81,20 +79,20 @@ document.addEventListener("DOMContentLoaded", () => {
         let coutBatterie = document.getElementById("nbBatterie").value;
         let primeAutoCo = document.getElementById("primeAutoC").value;
         let RAC = document.getElementById("racTVA").value;
-        let racHT = document.getElementById("racHT").value;
-        let numBilan = selectNumBilan(SIRET);
+        let economie25a = document.getElementById("economie25a").value;
+        const url = new URL(window.location.href);
+        const SIRET = url.searchParams.get("siret");
 
+        
         try {
             let numBilan = await window.electron.selectNumBilan(SIRET);
-
+            console.log(prixKwH2024,' ',prixKwH2030,' ',prixKwH2035,' ',montant10A,' ',capacitéProd,' ',puissanceInsta,' ',coutPanneau,' ',coutBatterie,' ',primeAutoCo,' ',RAC,' ',economie25a,' ',numBilan);
             if (!numBilan) {
                 console.error("Aucun numéro de bilan trouvé.");
                 alert("Erreur : Aucun bilan trouvé pour ce SIRET.");
                 return;
             }
-            await window.electron.insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd
-                ,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,racHT,numBilan
-            )
+            await window.electron.insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan)
             console.log("Simulation Client ajouté avec succès");
         } catch (err) {
             console.error('Erreur lors de l\'insertion de la simulation client : ',err);
@@ -110,8 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Insertion du client, puis du représentant
             await insertBilan();
             await insertSimulationClient();
-            alert("Formulaire soumis avec succès !");
-            window.location.href = `accueilConnecté.html`;
+            window.location.href = 'acceuilConnecté.html';
         } catch (err) {
             alert(err.message);
         }
