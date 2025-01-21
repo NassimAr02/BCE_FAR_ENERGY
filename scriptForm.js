@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Insertion du client, puis du représentant
           await insertClient();
           await insertRepresentantClient();
+
           window.location.href = `suiteBilan.html?siret=${encodeURIComponent(numSIRET)}`;
       } catch (err) {
           alert(err.message);

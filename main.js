@@ -151,19 +151,46 @@ async function initDatabase() {
                 FOREIGN KEY(numCo) REFERENCES Conseiller(numCo),
                 FOREIGN KEY(numBilan) REFERENCES bilan(numBilan)
             );
+            CREATE VIEW IF NOT EXISTS vueBilan 
+            AS
+            SELECT 
+                b.numBilan,
+                C.SIRET,
+                C.raisonSociale,
+                b.necessite,
+                S.dateBilan,
+                b.montantGlobal
+                
+            FROM Client C,bilan b, simulationClient S WHERE C.SIRET = b.SIRET AND S.numBilan = b.numBilan
         `);
 
         // Exemple d'ajout d'un conseiller
-        // const password = 'monMotDePasse';
-        // const hash = await argon2.hash(password);
-        // const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
-        // stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
+        const password = 'monMotDePasse';
+        const hash = await argon2.hash(password);
+        const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+        stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
     } catch (err) {
         console.error('Erreur lors de l\'initialisation de la base de données :', err);
     }
 }
 
 
+async function selectVueBilan(){
+    const req = dbBCE.prepare('SELECT * FROM vueBilan');
+    console.log('Données récupérées de vueBilan :', result); // Debug : Affichez les données récupérées
+    const result =  req.all();
+    return result 
+}
+ipcMain.handle('selectVueBilan',async (event) => {
+    try{
+        const bilan = await selectVueBilan();
+        return bilan;
+
+    } catch(err){
+        console.error('Erreur lors de la récupération des données de vueBilan :', err);
+        throw new Error('Erreur lors de la récupération des données de la vueBilan');
+    }
+})
 
 
 // Fonction pour insérer un conseiller

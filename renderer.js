@@ -1,66 +1,26 @@
-const { ipcRenderer } = require('electron');
-const { shell } = require("electron");
-// Écoutez l'événement 'send-data' du Main Process
-ipcRenderer.on('send-data', (event, data) => {
-    // Affichez les données dans la console du navigateur
-    console.log(`Données de la table ${data.tableName}:`, data.rows);
-});
+// Appeler la fonction exposee via le preload pour obtenir les données
+function selectVueBilan() {
+    window.electron.selectVueBilan()  // Appel à l'API exposée par le preload
+        .then((data) => {
+            console.log('Données reçues:', data);
+            const table = document.getElementById("table-body");  // Conteneur du tableau
+            table.innerHTML = '';  // Vider les anciens résultats du tableau
+            
+            // Parcourir et afficher les données
+            data.forEach((row) => {
+                const tr = document.createElement("tr");
+                for (const key in row) {
+                    const td = document.createElement("td");
+                    td.textContent = row[key];  // Insérer les données dans les cellules
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);  // Ajouter la ligne au tableau
+            });
+        })
+        .catch((error) => {
+            console.error('Erreur lors de la récupération des données:', error);
+        });
+}
 
-document.getElementById('openLinkButton').addEventListener('click', () => {
-    const url = 'https://re.jrc.ec.europa.eu/pvg_tools/fr/';
-    console.log('Bouton cliqué, ouverture du lien :', url);
-    window.electron.openLink(url);
-});
-
-
-// renderer.js
-
-
-// const Chart = require('chart.js'); // Charger Chart.js localement
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     const generateButton = document.getElementById('generateChart');
-    
-//     generateButton.addEventListener('click', () => {
-//         generateChart();
-//     });
-
-//     function generateChart() {
-//         const ctx = document.getElementById('myChart').getContext('2d');
-//         const chart = new Chart(ctx, {
-//             type: 'line', // Type de graphique : ligne
-//             data: {
-//                 labels: ['Courant', '2030', '2035'], // Labels pour les différentes années
-//                 datasets: [
-//                     {
-//                         label: 'Coût Mensuel Courant (€)',
-//                         data: [120, 130, 140], // Données pour la première ligne
-//                         borderColor: 'rgba(0, 123, 255, 1)', // Couleur de la ligne
-//                         backgroundColor: 'rgba(0, 123, 255, 0.2)', // Couleur de fond sous la ligne
-//                         fill: true, // Remplir sous la ligne
-//                         tension: 0.4, // Courbure de la ligne
-//                         borderWidth: 2
-//                     },
-//                     {
-//                         label: 'Coût Mensuel 2030 (€)',
-//                         data: [150, 160, 170], // Données pour la deuxième ligne
-//                         borderColor: 'rgba(40, 167, 69, 1)', // Couleur de la ligne
-//                         backgroundColor: 'rgba(40, 167, 69, 0.2)', // Couleur de fond sous la ligne
-//                         fill: true, // Remplir sous la ligne
-//                         tension: 0.4, // Courbure de la ligne
-//                         borderWidth: 2
-//                     }
-//                 ]
-//             },
-//             options: {
-//                 responsive: true,
-//                 scales: {
-//                     y: {
-//                         beginAtZero: true // Commence l'axe Y à zéro
-//                     }
-//                 }
-//             }
-//         });
-//     }
-// });
-
+// Appeler la fonction pour remplir le tableau dès que la page est chargée
+window.onload = selectVueBilan;

@@ -85,14 +85,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         
         try {
-            let numBilan = await window.electron.selectNumBilan(SIRET);
+            let numBilan = window.electron.selectNumBilan(SIRET);
             console.log(prixKwH2024,' ',prixKwH2030,' ',prixKwH2035,' ',montant10A,' ',capacitéProd,' ',puissanceInsta,' ',coutPanneau,' ',coutBatterie,' ',primeAutoCo,' ',RAC,' ',economie25a,' ',numBilan);
             if (!numBilan) {
                 console.error("Aucun numéro de bilan trouvé.");
                 alert("Erreur : Aucun bilan trouvé pour ce SIRET.");
                 return;
             }
-            await window.electron.insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan)
+            window.electron.insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan)
             console.log("Simulation Client ajouté avec succès");
         } catch (err) {
             console.error('Erreur lors de l\'insertion de la simulation client : ',err);
