@@ -85,10 +85,7 @@ async function initDatabase() {
             CREATE TABLE IF NOT EXISTS Client(
                 SIRET VARCHAR(50) PRIMARY KEY,
                 raisonSociale VARCHAR(50),
-                numRue VARCHAR(12),
-                rue VARCHAR(50),
-                ville VARCHAR(50),
-                CP VARCHAR(5),
+                adresse VARCHAR(150),
                 secteurActivite VARCHAR(50),
                 effectifEntreprise INT,
                 horaireOuverture VARCHAR(50),
@@ -170,8 +167,9 @@ async function initDatabase() {
 
 async function selectVueBilan(){
     const req = dbBCE.prepare('SELECT * FROM vueBilan');
+    const result = req.all();
     console.log('Données récupérées de vueBilan :', result); // Debug : Affichez les données récupérées
-    const result =  req.all();
+
     return result 
 }
 ipcMain.handle('selectVueBilan',async (event) => {
@@ -207,13 +205,13 @@ ipcMain.handle('insertConseiller', async (event, nomCO, prenomCO, mdpCO) => {
     }
 });
 
-async function insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant){
-    const req = dbBCE.prepare('INSERT INTO CLIENT(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-    req.run(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant);
+async function insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant){
+    const req = dbBCE.prepare('INSERT INTO CLIENT(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,amperage,pointLivraison,typeCourant) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+    req.run(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant);
 }
-ipcMain.handle('insertClient',async (event,SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant) =>{
+ipcMain.handle('insertClient',async (event,SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant) =>{
     try {
-        await insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant)
+        await insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant)
         numSIRET = SIRET;
         return 'Client ajouté avec succès';
     } catch (err){
@@ -247,7 +245,7 @@ async function verifyPassword(username, password) {
 
     try {
         const valid = await argon2.verify(user.mdpCo, password);  // Vérification du mot de passe
-        numCon = user.numCo;
+        numCon = user.numCO;
         return valid;
     } catch (err) {
         console.log("Erreur lors de la vérification du mot de passe:", err);  // Log en cas d'erreur
@@ -266,7 +264,7 @@ ipcMain.handle('login', async (event, username, password) => {
 async function insertBilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
     motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
     puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET){
-    const req = dbBCE.prepare('INSERT INTO bilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    const req = dbBCE.prepare('INSERT INTO bilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCO) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     req.run(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
         motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
         puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCon)
@@ -286,23 +284,23 @@ ipcMain.handle('insertBilanSimulation',async(event,consoKwH,montantGlobal,abo_co
     }
 })
 
-function clearDatabase() {
-    try {
-        dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
+// function clearDatabase() {
+//     try {
+//         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
 
-        // Vider chaque table
-        dbBCE.exec('DELETE FROM Conseiller;');
-        dbBCE.exec('DELETE FROM Client;');
-        dbBCE.exec('DELETE FROM representantClient;');
-        dbBCE.exec('DELETE FROM bilanSimulation');
+//         // Vider chaque table
+//         dbBCE.exec('DELETE FROM Conseiller;');
+//         dbBCE.exec('DELETE FROM Client;');
+//         dbBCE.exec('DELETE FROM representantClient;');
+//         dbBCE.exec('DELETE FROM bilanSimulation');
 
-        console.log("Toutes les données de la base de données ont été effacées.");
-    } catch (err) {
-        console.error("Erreur lors de l'effacement des données :", err);
-    } finally {
-        dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
-    }
-}
+//         console.log("Toutes les données de la base de données ont été effacées.");
+//     } catch (err) {
+//         console.error("Erreur lors de l'effacement des données :", err);
+//     } finally {
+//         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
+//     }
+// }
 
 ipcMain.on('open-link', (event, url) => {
     console.log('URL reçue pour ouvrir un lien externe :', url);
@@ -314,7 +312,7 @@ ipcMain.on('open-link', (event, url) => {
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
   createWindow()
-  clearDatabase();  
+//   clearDatabase();  
   
 
   app.on('activate', () => {
