@@ -87,7 +87,7 @@
                 const prixC = parseFloat(document.getElementById('prixCourant').value)
                 let prix2030 = document.getElementById("prix2030").value;
                 let prix2035 = document.getElementById("prix2035").value;
-                let prixMoyen = parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035)/ 3;
+                let prixMoyen = (parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035))/ 3;
                 economie25a.value = ((prixMoyen * capaciteProduction) * 25).toFixed(2);
                             
                 
