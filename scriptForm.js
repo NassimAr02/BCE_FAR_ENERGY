@@ -52,12 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
       let pointLivraison = document.getElementById("pointLivraison").value;
       let typeCourant = document.getElementById("typeCourant").value;
 
+      console.log(SIRET,' ',raisonSociale,' ',adresse,' ',secteurActivite,' ',effectifEntreprise,' ',horaireOuverture,' ',dateCreation,' ',consommationAnnuelle,' ',proprieteMur,' ',dureeAmortissement,' ',depenseElec,' ',natureProjet,' ',puissanceCompteur,' ',ampérage,' ',pointLivraison,' ',typeCourant);
       try {
-          await window.electron.insertClient(
-            SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,
-            dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,
-            depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant
-          );
+          await window.electron.insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,dépenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant);
           console.log("Client inséré avec succès !");
       } catch (err) {
           console.error('Erreur lors de l\'insertion du client :', err);

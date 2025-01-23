@@ -29,7 +29,7 @@ const createWindow = () => {
                 const rows = dbBCE.prepare(`SELECT * FROM ${table.name}`).all();
                 console.log(rows);
                 // Envoie les données à la fenêtre de rendu
-                mainWindow.webContents.send('send-data', { tableName: table.name, rows: rows });
+                mainWindow.webContents.send('send-data', { tableName: table.name, rows: JSON.parse(JSON.stringify(rows)) });
             });
         } catch (err) {
             console.error("Erreur lors de l'affichage des données : ", err);
@@ -60,6 +60,9 @@ async function initDatabase() {
 
         // Activer les contraintes de clé étrangère
         dbBCE.exec('PRAGMA foreign_keys = ON;');
+        dbBCE.pragma('journal_mode = WAL');
+        
+        
 
         // dbBCE.exec(`
         //     DROP TABLE IF EXISTS Conseiller;
@@ -72,53 +75,35 @@ async function initDatabase() {
         dbBCE.exec(`
             
             CREATE TABLE IF NOT EXISTS Conseiller(
-                numCo INTEGER  NOT NULL,
+                numCO INTEGER PRIMARY KEY AUTOINCREMENT,
                 idCo VARCHAR(50),
                 nomCo VARCHAR(30),
                 prenomCo VARCHAR(30),
-                mdpCo VARCHAR(50),
-                PRIMARY KEY(numCo)
+                mdpCo VARCHAR(64)
             );
-            
+
             CREATE TABLE IF NOT EXISTS Client(
-                SIRET VARCHAR(50),
+                SIRET VARCHAR(50) PRIMARY KEY,
                 raisonSociale VARCHAR(50),
-                adresse VARCHAR(150),
+                numRue VARCHAR(12),
+                rue VARCHAR(50),
+                ville VARCHAR(50),
+                CP VARCHAR(5),
                 secteurActivite VARCHAR(50),
-                effectifEntreprise INTEGER,
+                effectifEntreprise INT,
                 horaireOuverture VARCHAR(50),
                 dateCreation VARCHAR(50),
                 consommationAnnuelle DECIMAL(20,2),
                 proprieteMur BOOLEAN,
                 dureeAmortissement VARCHAR(15),
-                dépenseElec DECIMAL(20,2),
+                depenseElec DECIMAL(20,2),
                 natureProjet VARCHAR(50),
                 puissanceCompteur DECIMAL(15,2),
-                ampérage DECIMAL(15,2),
+                amperage DECIMAL(15,2),
                 pointLivraison VARCHAR(50),
-                typeCourant VARCHAR(50),
-                PRIMARY KEY(SIRET)
+                typeCourant VARCHAR(50)
             );
-            
-            CREATE TABLE IF NOT EXISTS bilan(
-                numBilan INTEGER NOT NULL,
-                necessite BOOLEAN,
-                consoKwH DECIMAL(15,2),
-                montantGlobal DECIMAL(15,2),
-                abo_Conso VARCHAR(50),
-                partAcheminement DECIMAL(15,2),
-                CTA_CSPE DECIMAL(15,2),
-                TVA DECIMAL(4,2),
-                montantGlobalTA DECIMAL(15,2),
-                motivationProjet VARCHAR(500),
-                refusProjet VARCHAR(500),
-                SIRET VARCHAR(50) NOT NULL,
-                numCo INTEGER NOT NULL,
-                PRIMARY KEY(numBilan),
-                FOREIGN KEY(SIRET) REFERENCES Client(SIRET),
-                FOREIGN KEY(numCo) REFERENCES Conseiller(numCo)
-            );
-    
+
             CREATE TABLE IF NOT EXISTS representantClient(
                 SIRET VARCHAR(50),
                 nomR VARCHAR(25),
@@ -128,29 +113,37 @@ async function initDatabase() {
                 PRIMARY KEY(SIRET),
                 FOREIGN KEY(SIRET) REFERENCES Client(SIRET)
             );
-            
-            CREATE TABLE IF NOT EXISTS simulationClient(
-                numSimulation INTEGER NOT NULL,
+
+            CREATE TABLE IF NOT EXISTS bilanSimulation(
+                numBilanSimulation INTEGER PRIMARY KEY AUTOINCREMENT,
+                consoKwH DECIMAL(15,2),
+                montantGlobal DECIMAL(15,2),
+                abo_Conso VARCHAR(50),
+                partAcheminement DECIMAL(15,2),
+                CTA_CSPE DECIMAL(15,2),
+                TVA DECIMAL(4,2),
+                necessite BOOLEAN,
+                motivationProjet VARCHAR(500),
+                refusProjet VARCHAR(500),
                 prixKwH2024 DECIMAL(15,2),
                 prixKwH2030 DECIMAL(15,2),
                 prixKwH2035 DECIMAL(15,2),
-                montant10A DECIMAL(15,2),
-                acheminement10A DECIMAL(15,2),
-                capacitéProd DECIMAL(15,2),
+                montantGlobalTA DECIMAL(15,2),
+                capaciteProd DECIMAL(15,2),
                 puissanceInsta DECIMAL(15,2),
                 coutPanneau DECIMAL(15,2),
                 coutBatterie DECIMAL(15,2),
                 primeAutoCo DECIMAL(15,2),
                 RAC VARCHAR(50),
-                dateBilan DATE DEFAULT CURRENT_TIMESTAMP,
+                dateBilan DATETIME DEFAULT CURRENT_TIMESTAMP,
                 economie25a VARCHAR(50),
-                graphiqueF VARCHAR(150),
-                numCo INTEGER NOT NULL,
-                numBilan INTEGER NOT NULL,
-                PRIMARY KEY(numSimulation),
-                FOREIGN KEY(numCo) REFERENCES Conseiller(numCo),
-                FOREIGN KEY(numBilan) REFERENCES bilan(numBilan)
+                SIRET VARCHAR(50) NOT NULL,
+                numCO INT NOT NULL,
+                FOREIGN KEY(SIRET) REFERENCES Client(SIRET),
+                FOREIGN KEY(numCO) REFERENCES Conseiller(numCO)
             );
+
+
             CREATE VIEW IF NOT EXISTS vueBilan 
             AS
             SELECT 
@@ -267,73 +260,49 @@ ipcMain.handle('login', async (event, username, password) => {
     const isValid = await verifyPassword(username, password);
     return isValid;
 });
-async function insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET){
-    const req = dbBCE.prepare('INSERT INTO bilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)')
-    req.run(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET,numCon)
+
+
+
+async function insertBilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+    motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+    puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET){
+    const req = dbBCE.prepare('INSERT INTO bilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCo) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
+    req.run(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+        motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+        puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCon)
 }
 
-ipcMain.handle('insertBilan',async(event,necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET)=>{
+ipcMain.handle('insertBilanSimulation',async(event,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+    motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+    puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET)=>{
     try {
-        await insertBilan(necessite,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,montantGlobalTA,motivationProjet,refusProjet,SIRET)
-        return 'Bilan ajouté avec succès';
+        await insertBilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+            motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+            puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET)
+        return 'BilanSimulation ajouté avec succès';
     } catch(err){
-        console.error('Erreur lors de l\'insertion du bilan : ',err)
-        throw new Error('Erreur lors de l\'ajout du bilan') 
+        console.error('Erreur lors de l\'insertion du BilanSimulation : ',err)
+        throw new Error('Erreur lors de l\'ajout du BilanSimulation') 
     }
 })
-async function insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan){
-    const req = dbBCE.prepare('INSERT INTO simulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numCo,numBilan) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
-    req.run(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numCon,numBilan)
 
-}
-ipcMain.handle('insertSimulationClient',async(event,prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan)=>{
+function clearDatabase() {
     try {
-        await insertSimulationClient(prixKwH2024,prixKwH2030,prixKwH2035,montant10A,capacitéProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,numBilan);
-        return 'Simulation ajouté avec succès';
-    } catch (err){
-        console.error('Erreur lors de l\'insertion de la simulation : ',err)
-        throw new Error('Erreur lors de l\'ajout de la simulation client')
-    } 
-})
+        dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
 
-function selectNumBilan(SIRET){
-    const req = dbBCE.prepare('SELECT numBilan FROM bilan WHERE SIRET = ? ORDER BY numBilan DESC LIMIT 1');
+        // Vider chaque table
+        dbBCE.exec('DELETE FROM Conseiller;');
+        dbBCE.exec('DELETE FROM Client;');
+        dbBCE.exec('DELETE FROM representantClient;');
+        dbBCE.exec('DELETE FROM bilanSimulation');
 
-    const result = req.get(SIRET);
-
-    return result ? result.numBilan : null;
-}
-ipcMain.handle('selectNumBilan', async (event, SIRET) => {
-    try {
-        const numBilan = selectNumBilan(SIRET); // Appelle la fonction pour récupérer le numéro de bilan
-        if (numBilan) {
-            return numBilan; // Retourne le numéro de bilan trouvé
-        } else {
-            throw new Error(`Aucun bilan trouvé pour le SIRET ${SIRET}`);
-        }
+        console.log("Toutes les données de la base de données ont été effacées.");
     } catch (err) {
-        console.error('Erreur lors de la sélection du numéro de bilan : ', err.message);
-        throw err; // Renvoie l'erreur pour la gérer côté frontend
+        console.error("Erreur lors de l'effacement des données :", err);
+    } finally {
+        dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
     }
-});  
-// function clearDatabase() {
-//     try {
-//         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
-
-//         // Vider chaque table
-//         dbBCE.exec('DELETE FROM Conseiller;');
-//         dbBCE.exec('DELETE FROM Client;');
-//         dbBCE.exec('DELETE FROM bilan;');
-//         dbBCE.exec('DELETE FROM representantClient;');
-//         dbBCE.exec('DELETE FROM simulationClient;');
-
-//         console.log("Toutes les données de la base de données ont été effacées.");
-//     } catch (err) {
-//         console.error("Erreur lors de l'effacement des données :", err);
-//     } finally {
-//         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
-//     }
-// }
+}
 
 ipcMain.on('open-link', (event, url) => {
     console.log('URL reçue pour ouvrir un lien externe :', url);
