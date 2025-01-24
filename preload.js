@@ -20,5 +20,6 @@ contextBridge.exposeInMainWorld('electron', {
     genererChart: (factAct, fact2030, fact2035, consActuelle, MTA, capaciteProduction, prixC, prix2030, prix2035, racTVA) => {
         return ipcRenderer.invoke("genererChart", factAct, fact2030, fact2035, consActuelle, MTA, capaciteProduction, prixC, prix2030, prix2035, racTVA);
     },
-    selectVueBilan: () => ipcRenderer.invoke("selectVueBilan")
+    selectVueBilan: () => ipcRenderer.invoke("selectVueBilan"),
+    selectBilanSimulation: (SIRET,numCO) => ipcRenderer.invoke("selectBilanSimulation",SIRET,numCO)
 });

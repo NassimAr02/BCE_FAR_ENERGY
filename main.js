@@ -169,25 +169,58 @@ async function initDatabase() {
         console.error('Erreur lors de l\'initialisation de la base de données :', err);
     }
 }
+async function selectBilanSimulation(SIRET,numCO){
+    try {
+        const req =dbBCE.prepare('SELECT * FROM bilanSimulation WHERE numCO = ? AND SIRET = ?')
+        const res = req.all(SIRET,numCO);
 
-
-async function selectVueBilan(){
-    const req = dbBCE.prepare('SELECT * FROM vueBilan WHERE numCO = ?');
-    const result = req.all(numCon);
-    console.log('Données récupérées de vueBilan :', result); // Debug : Affichez les données récupérées
-
-    return result
-}
-ipcMain.handle('selectVueBilan',async (event) => {
-    try{
-        const bilanSimulation = await selectVueBilan();
-        return bilanSimulation;
-
-    } catch(err){
-        console.error('Erreur lors de la récupération des données de vueBilan :', err);
-        throw new Error('Erreur lors de la récupération des données de la vueBilan');
+        console.log(res);
+        return res;
+    } catch (err) {
+        console.error ("Erreur dans selectBilanSimulation :", err);
+        throw new Error("Erreur lors de la récupération des données de bilanSimulation");
     }
+}
+ipcMain.handle('selectBilanSimulation', async (event,SIRET,numCO) => {
+    try {
+        const bilanSimulation = await selectBilanSimulation(SIRET, numCO);
+        return bilanSimulation;
+    } catch (err) {
+        console.error('Erreur dans le handler IPC de electBilanSimulation :', err);
+        throw new Error('Erreur lors de la récupération des données de bilanSimulation');
+    }
+
 })
+
+async function selectVueBilan() {
+    try {
+        const req = dbBCE.prepare('SELECT * FROM vueBilan WHERE numCO = ?');
+        const results = req.all(numCon); // Utilisation de la variable globale numCon
+
+        // Transformation de la valeur "necessite"
+        results.forEach((row) => {
+            row.necessite = row.necessite === 1 ? 'Oui' : 'Non';
+        });
+
+        console.log('Données récupérées de vueBilan :', results); // Debug
+        return results;
+    } catch (err) {
+        console.error('Erreur dans selectVueBilan :', err);
+        throw new Error('Erreur lors de la récupération des données de vueBilan');
+    }
+}
+
+// Handler IPC
+ipcMain.handle('selectVueBilan', async (event) => {
+    try {
+        const bilanSimulation = await selectVueBilan(); // Appel de la fonction
+        return bilanSimulation;
+    } catch (err) {
+        console.error('Erreur dans le handler IPC de selectVueBilan :', err);
+        throw new Error('Erreur lors de la récupération des données de vueBilan');
+    }
+});
+
 
 
 // Fonction pour insérer un conseiller
