@@ -11,20 +11,68 @@
     <header>
         <a href="acceuilConnecté.html"><img src="logo-FAR.png" alt="Logo FAR" ></a>
     </header>
-    <table>
-        <thead>
-            <tr>
-                <th>SIRET :</th>
-                <th>Raison Sociale :</th>
-                <th>Date du bilan :</th>
-                <th>Montant Facture :</th>
-                <th>Necessité Client :</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            
-        </tbody>
-        <script src="renderer.js"></script>
-    </table>
+    <style>
+                /* Amélioration des cellules du tableau */
+        table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        th, td {
+        border: 1px solid #ddd;
+        padding: 12px; /* Ajout d'espace */
+        text-align: center;
+        }
+
+        th {
+        background-color: #002c6f; /* Bleu professionnel */
+        color: #fff;
+        font-weight: bold;
+        }
+
+        tr:hover {
+        background-color: #f2f2f2; /* Effet au survol */
+        }
+
+        td {
+        vertical-align: middle; /* Centrage vertical */
+        }
+
+        /* Conteneur du tableau */
+        .table-container {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 90%; /* Largeur fluide */
+        margin: 20px auto;
+        }
+        fieldset{
+            width: 550px;
+        }
+    </style>
+    <fieldset class="step-container.wide">
+        <table>
+            <thead>
+                <tr>
+                    <th>SIRET :</th>
+                    <th>Raison Sociale :</th>
+                    <th>Date du bilan :</th>
+                    <th>Montant Facture :</th>
+                    <th>Necessité Client :</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr>
+
+                </tr>
+            </tbody>
+            <script src="renderer.js"></script>
+        </table>
+    </fieldset>
+    
 </body>
 </html>

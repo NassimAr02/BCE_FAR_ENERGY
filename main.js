@@ -15,7 +15,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
         nodeIntegration: true,
-        contextIsolation: true, 
+        contextIsolation: true,
         preload: path.join(__dirname, 'preload.js')
     }
   })
@@ -23,7 +23,7 @@ const createWindow = () => {
     function afficherToutesLesDonnees() {
         try {
             const tables = dbBCE.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
-            
+
             tables.forEach(table => {
                 console.log(`\nDonnées de la table : ${table.name}`);
                 const rows = dbBCE.prepare(`SELECT * FROM ${table.name}`).all();
@@ -48,7 +48,7 @@ const createWindow = () => {
   initDatabase();
 }
 
-   
+
 
 
 
@@ -61,8 +61,8 @@ async function initDatabase() {
         // Activer les contraintes de clé étrangère
         dbBCE.exec('PRAGMA foreign_keys = ON;');
         dbBCE.pragma('journal_mode = WAL');
-        
-        
+
+
 
         // dbBCE.exec(`
         //     DROP TABLE IF EXISTS Conseiller;
@@ -70,10 +70,12 @@ async function initDatabase() {
         //     DROP TABLE IF EXISTS bilan;
         //     DROP TABLE IF EXISTS representantClient;
         //     DROP TABLE IF EXISTS simulationClient;
+        //     DROP VIEW IF EXISTS vueBilan;
+        //     DROP TABLE IF EXISTS bilanSimulation;
         // `);
         // Créer les tables (extrait de votre code)
         dbBCE.exec(`
-            
+
             CREATE TABLE IF NOT EXISTS Conseiller(
                 numCO INTEGER PRIMARY KEY AUTOINCREMENT,
                 idCo VARCHAR(50),
@@ -141,24 +143,28 @@ async function initDatabase() {
             );
 
 
-            CREATE VIEW IF NOT EXISTS vueBilan 
-            AS
-            SELECT 
-                b.numBilan,
-                C.SIRET,
-                C.raisonSociale,
-                b.necessite,
-                S.dateBilan,
-                b.montantGlobal
-                
-            FROM Client C,bilan b, simulationClient S WHERE C.SIRET = b.SIRET AND S.numBilan = b.numBilan
+            CREATE VIEW IF NOT EXISTS vueBilan AS
+            SELECT
+                bs.numCO,
+                bs.SIRET,
+                c.raisonSociale,
+                bs.dateBilan,
+                bs.montantGlobal,
+                bs.necessite
+            FROM
+                bilanSimulation bs
+            INNER JOIN
+                Client c ON bs.SIRET = c.SIRET
+            INNER JOIN
+                Conseiller co ON bs.numCO = co.numCO;
+
         `);
 
         // Exemple d'ajout d'un conseiller
-        const password = 'monMotDePasse';
-        const hash = await argon2.hash(password);
-        const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
-        stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
+        // const password = 'monMotDePasse';
+        // const hash = await argon2.hash(password);
+        // const stmt = dbBCE.prepare('INSERT OR IGNORE INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+        // stmt.run('Dupont', 'Jean', 'Dupont.Jean', hash);
     } catch (err) {
         console.error('Erreur lors de l\'initialisation de la base de données :', err);
     }
@@ -166,16 +172,16 @@ async function initDatabase() {
 
 
 async function selectVueBilan(){
-    const req = dbBCE.prepare('SELECT * FROM vueBilan');
-    const result = req.all();
+    const req = dbBCE.prepare('SELECT * FROM vueBilan WHERE numCO = ?');
+    const result = req.all(numCon);
     console.log('Données récupérées de vueBilan :', result); // Debug : Affichez les données récupérées
 
-    return result 
+    return result
 }
 ipcMain.handle('selectVueBilan',async (event) => {
     try{
-        const bilan = await selectVueBilan();
-        return bilan;
+        const bilanSimulation = await selectVueBilan();
+        return bilanSimulation;
 
     } catch(err){
         console.error('Erreur lors de la récupération des données de vueBilan :', err);
@@ -233,12 +239,12 @@ ipcMain.handle('insertRepresentantClient',async(event,SIRET,nomR,prenomR,telR,em
     }
 })
 let numCon;
-let numSIRET; 
+let numSIRET;
 // Fonction pour vérifier le mot de passe
 async function verifyPassword(username, password) {
-    
+
     const user = dbBCE.prepare('SELECT * FROM Conseiller WHERE idCo = ?').get(username);
-    
+
     if (!user) {
         return false;
     }
@@ -280,7 +286,7 @@ ipcMain.handle('insertBilanSimulation',async(event,consoKwH,montantGlobal,abo_co
         return 'BilanSimulation ajouté avec succès';
     } catch(err){
         console.error('Erreur lors de l\'insertion du BilanSimulation : ',err)
-        throw new Error('Erreur lors de l\'ajout du BilanSimulation') 
+        throw new Error('Erreur lors de l\'ajout du BilanSimulation')
     }
 })
 
@@ -312,8 +318,8 @@ ipcMain.on('open-link', (event, url) => {
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
   createWindow()
-//   clearDatabase();  
-  
+//    clearDatabase();
+
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

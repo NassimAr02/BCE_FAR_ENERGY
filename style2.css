@@ -225,7 +225,7 @@ table {
 }
 
 /* Lignes des en-têtes */
-table th {
+table th,thead {
   background-color: #1d317c; /* Couleur principale */
   color: white; /* Texte blanc */
   padding: 12px; /* Espacement interne */
