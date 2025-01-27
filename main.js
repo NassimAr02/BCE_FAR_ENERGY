@@ -61,6 +61,8 @@ async function initDatabase() {
         // Activer les contraintes de clé étrangère
         dbBCE.exec('PRAGMA foreign_keys = ON;');
         dbBCE.pragma('journal_mode = WAL');
+        dbBCE.exec('PRAGMA encoding = "UTF-8";');
+
 
 
 
@@ -363,23 +365,23 @@ ipcMain.handle('insertBilanSimulation',async(event,consoKwH,montantGlobal,abo_co
     }
 })
 
-// function clearDatabase() {
-//     try {
-//         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
+function clearDatabase() {
+    try {
+        dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
 
-//         // Vider chaque table
-//         dbBCE.exec('DELETE FROM Conseiller;');
-//         dbBCE.exec('DELETE FROM Client;');
-//         dbBCE.exec('DELETE FROM representantClient;');
-//         dbBCE.exec('DELETE FROM bilanSimulation');
+        // Vider chaque table
+        dbBCE.exec('DELETE FROM Conseiller;');
+        dbBCE.exec('DELETE FROM Client;');
+        dbBCE.exec('DELETE FROM representantClient;');
+        dbBCE.exec('DELETE FROM bilanSimulation');
 
-//         console.log("Toutes les données de la base de données ont été effacées.");
-//     } catch (err) {
-//         console.error("Erreur lors de l'effacement des données :", err);
-//     } finally {
-//         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
-//     }
-// }
+        console.log("Toutes les données de la base de données ont été effacées.");
+    } catch (err) {
+        console.error("Erreur lors de l'effacement des données :", err);
+    } finally {
+        dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
+    }
+}
 
 ipcMain.on('open-link', (event, url) => {
     console.log('URL reçue pour ouvrir un lien externe :', url);
@@ -390,8 +392,8 @@ ipcMain.on('open-link', (event, url) => {
 
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
-  createWindow()
-//    clearDatabase();
+    createWindow()
+    clearDatabase();
 
 
   app.on('activate', () => {

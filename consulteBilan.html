@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <script src="rendereListe.js"></script>
+    
 
     <header>
         <a href="acceuilConnecté.html"><img src="logo-FAR.png" alt="Logo FAR" ></a>
@@ -70,12 +70,12 @@
                 <div id="proprieteMur">
                     <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="1" checked> Oui</label>
                     <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="0"> Non</label>
-
                 </div>
                 <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement">
                 <input type="text" id="depenseElec" placeholder="Dépense Électrique" required>
                 <label for="natureProjet">Nature du projet :</label>
                 <select id="natureProjet" required>
+                    <option value="">-- Sélectionnez une option --</option>
                     <option value="Autoconsommation">Autoconsommation</option>
                     <option value="Revente du surplus">Revente du surplus</option>
                     <option value="Revente totale">Revente totale</option>
@@ -96,6 +96,7 @@
                 <input type="text" id="pointLivraison" placeholder="Point de livraison" required>
                 <label for="typeCourant">
                     <select id="typeCourant">
+                        <option value="">-- Sélectionnez une option --</option>
                         <option value="Monophasé">Monophasé</option>
                         <option value="Triphasé">Triphasé</option>
                     </select>
@@ -105,6 +106,7 @@
                     <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Valider" title="Valider"></i></button>
                 </div>
             </form>
+            <script src="rendereListe.js"></script>
         </fieldset>
     </main>
 </body>
