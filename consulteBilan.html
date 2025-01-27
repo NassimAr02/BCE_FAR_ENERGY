@@ -9,22 +9,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <script src="rendererListe.js" defer></script>
+    <script src="rendereListe.js"></script>
 
     <header>
         <a href="acceuilConnecté.html"><img src="logo-FAR.png" alt="Logo FAR" ></a>
     </header>
     <main>
         
-        <fieldset class="stepper-container">
 
+        <fieldset class="stepper-container">
+            
             <div class="stepper">
                 <div class="step step--1 step-active">Étape 1</div>
                 <div class="step step--2">Étape 2</div>
                 <div class="step step--3">Étape 3</div>
                 <div class="step step--4">Étape 4</div>
             </div>
-
+            <div class="loader" id="loader" style="display: none;"></div>
             <!-- Étape 1 -->
             <form class="form form-active" id="form-step-1">
                 <div class="form--header-container">

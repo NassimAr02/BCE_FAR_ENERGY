@@ -186,12 +186,52 @@ ipcMain.handle('selectBilanSimulation', async (event,SIRET,numCO) => {
         const bilanSimulation = await selectBilanSimulation(SIRET, numCO);
         return bilanSimulation;
     } catch (err) {
-        console.error('Erreur dans le handler IPC de electBilanSimulation :', err);
+        console.error('Erreur dans le handler IPC de SelectBilanSimulation :', err);
         throw new Error('Erreur lors de la récupération des données de bilanSimulation');
     }
 
 })
+async function selectClient(SIRET) {
+    try {
+        const req = dbBCE.prepare('SELECT * FROM Client WHERE SIRET = ?')
+        const res = req.all(SIRET);
 
+        return res;
+    } catch {
+        console.error("Erreur dans selectClient",err);
+        throw new Error("Erreur lors de la récupération des données client");
+    }
+}
+ipcMain.handle('selectClient',async (event,SIRET)   => {
+    try {
+        const Client = await selectClient(SIRET);
+        return Client;
+    }catch(err){
+        console.error("Erreur dans le handler IPC de selectClient :",err)
+        throw new Error("Erreur lors de la récupération des données de Client");
+    }
+})
+
+async function selectRClient(SIRET) {
+    try {
+        const req = dbBCE.prepare('SELECT * FROM representantClient WHERE SIRET = ?')
+        const res = req.all(SIRET);
+
+        return res;
+    } catch {
+        console.error("Erreur dans selectRClient ",err)
+        throw new Error("Erreur lors de la récupération des données Représentant client");
+    }
+}
+ipcMain.handle('selectRClient', async (event,SIRET) => {
+    try {
+        const RClient = await selectRClient(SIRET);
+        return RClient;
+    } catch(err){
+        console.error("Erreur dans le handler IPC de selectRClient : ",err)
+        throw new Error("Erreur lors de la récupération des données représentant client")
+    }
+})
 async function selectVueBilan() {
     try {
         const req = dbBCE.prepare('SELECT * FROM vueBilan WHERE numCO = ?');
