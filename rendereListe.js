@@ -81,68 +81,89 @@ async function remplirChampR(SIRET) {
 }
 
 async function remplirChampC(SIRET) {
+    console.log("Début de remplirChampC avec SIRET :", SIRET);
 
-   
+    const loader = document.getElementById("loader");
+    loader.style.display = "block";
 
-    document.getElementById("SIRET").value = SIRET; 
-    let raisonSociale = document.getElementById("raisonSociale");
+    let SIRETField = document.getElementById("SIRET");
     let adresse = document.getElementById("adresse");
     let secteurActivite = document.getElementById("secteurActivite");
     let effectifEntreprise = document.getElementById("effectifEntreprise");
+    let horaireOuverture = document.getElementById("horaireOuverture");
     let dateCreation = document.getElementById("dateCreation");
-    let consommationAnnuelle = document.getElementById("consommationAnnuelle");
-    let dureeAmortissement = document.getElementById("dureeAmortissement");
-    let depenseElec = document.getElementById("depenseElec");
+    let raisonSociale = document.getElementById("raisonSociale");
+
     let natureProjet = document.getElementById("natureProjet");
-    let puissanceCompteur = document.getElementById("puissanceCompteur");
-    let ampérage = document.getElementById("ampérage");
-    let pointLivraison = document.getElementById("pointLivraison");
     let typeCourant = document.getElementById("typeCourant");
+
+    let consommationAnnuelle = document.getElementById("consommationAnnuelle");
+    let depenseElec = document.getElementById("depenseElec");
+    let dureeAmortissement = document.getElementById("dureeAmortissement");
+    let proprieteMurOui = document.getElementById("proprieteMurOui");
+    let proprieteMurNon = document.getElementById("proprieteMurNon");
+
+    let puissanceCompteur = document.getElementById("puissanceCompteur");
+    let amperage = document.getElementById("ampérage");
+    let pointLivraison = document.getElementById("pointLivraison");
+
     try {
-        const client = await window.electron.selectClient(SIRET);
-        console.log(numCO, SIRET, "Données reçues :", client);
-        
-        if (client && client.length > 0) {
-            raisonSociale.value = client.raisonSociale;
-            adresse.value = client.adresse;
-            secteurActivite.value = client.secteurActivite;
-            effectifEntreprise.value = client.effectifEntreprise;
-            dateCreation.value = client.dateCreation;
-            consommationAnnuelle.value = client.consommationAnnuelle;
-            depenseElec.value = client.depenseElec;
-            if(client.proprieteMur === 1){
-                document.getElementById("proprieteMurOui").checked = true;
-            } else if (client.proprieteMur === 0){
-                document.getElementById("proprieteMurNon").checked = true;
-            }
-            dureeAmortissement.value = client.dureeAmortissement;
-            depenseElec.value = client.depenseElec;
-            const propMur = client.natureProjet;
+        const ClientData = await window.electron.selectClient(SIRET);
+        console.log("Données reçues :", ClientData);
 
-            const option = natureProjet.querySelector(`option[value="${propMur}"]`);
-            if (option){
-                natureProjet.value = propMur;
-            }  else {
-                console.warn("Aucune option correspondante trouvée pour le statut :", propMur);
-            }
-            puissanceCompteur.value = client.puissanceCompteur;
-            ampérage.value = client.amperage
-            pointLivraison.value = client.pointLivraison;
-            
-            const type = client.typeCourant;
-            const option2 = typeCourant.querySelector(`option[value="${type}"]`);
-            if (option2){
-                typeCourant.value = type;
+        if (ClientData && ClientData.length > 0) {
+            const client = ClientData[0];
+
+            // Champs simples
+            SIRETField.value = client.SIRET || '';
+            adresse.value = client.adresse || '';
+            secteurActivite.value = client.secteurActivite || '';
+            effectifEntreprise.value = client.effectifEntreprise || '';
+            horaireOuverture.value = client.horaireOuverture || '';
+            dateCreation.value = client.dateCreation || '';
+            raisonSociale.value = client.raisonSociale || '';
+
+            consommationAnnuelle.value = client.consommationAnnuelle || '';
+            depenseElec.value = client.depenseElec || '';
+            dureeAmortissement.value = client.dureeAmortissement || '';
+
+            puissanceCompteur.value = client.puissanceCompteur || '';
+            amperage.value = client.amperage || '';
+            pointLivraison.value = client.pointLivraison || '';
+
+            // Radio button
+            if (client.proprieteMur == 1) {
+                proprieteMurOui.checked = true;
             } else {
-                console.warn("Aucune option correspondante trouvée pour le statut :", type);
+                proprieteMurNon.checked = true;
             }
 
+            // Listes déroulantes
+            let projetValue = client.natureProjet.trim();
+            const optionNature = natureProjet.querySelector(`option[value="${projetValue}"]`);
+            if (optionNature) {
+                natureProjet.value = projetValue;
+            } else {
+                console.warn("Aucune option correspondante trouvée pour natureProjet :", projetValue);
+            }
+
+            let courantValue = client.typeCourant.trim();
+            const optionCourant = typeCourant.querySelector(`option[value="${courantValue}"]`);
+            if (optionCourant) {
+                typeCourant.value = courantValue;
+            } else {
+                console.warn("Aucune option correspondante trouvée pour typeCourant :", courantValue);
+            }
+        } else {
+            console.warn("Aucune donnée client trouvée pour SIRET :", SIRET);
         }
-        
     } catch (error) {
-        console.error('Erreur lors de la récupération des données', error);
+        console.error("Erreur dans remplirChampC :", error);
+    } finally {
+        loader.style.display = "none";
     }
 }
+
 // Exécute la fonction lors du chargement de la page
 
 // Soumission du formulaire

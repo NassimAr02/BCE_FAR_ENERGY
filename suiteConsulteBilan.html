@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style2.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Analyse Facture</title>
+</head>
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const année = new Date().getFullYear();
+            const annéeC = "Prix " + année;
+            const annéeC2 = "Facture " + année;
+            const annéeCourant = document.getElementById("annéeCourant");
+            const annéeCourant2 = document.getElementById('annéeC');
+            if (annéeCourant) {
+                annéeCourant.textContent = annéeC; // Mise à jour du texte
+                annéeCourant2.textContent = annéeC2;
+            }
+        });
+        
+
+            function montantG() {
+                const acheminement = parseFloat(document.getElementById("partAcheminement")?.value) || 0;
+                const CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE")?.value) || 0;
+                const TVA = parseFloat(document.getElementById("TVA")?.value) || 0;
+
+
+                const montantGl = acheminement + CTA_CSPE + TVA;
+                const montantGlobalTot = document.getElementById("montantGlobalTot");
+                const montant10 = (montantGl * 10).toFixed(2)
+                if (montantGlobalTot) {
+                    montantGlobalTot.value = montantGl.toFixed(2); // Formate en 2 décimales
+                }
+                document.getElementById('montantTaxes10').value = montant10
+            }
+            
+            function calculCout(){
+                const consoKwH =parseFloat(document.getElementById('consoKwH').value)
+                const prixC = parseFloat(document.getElementById('prixCourant').value)
+                const prix2030 =parseFloat(document.getElementById('prix2030').value)
+                const prix2035 =parseFloat(document.getElementById('prix2035').value)
+
+                document.getElementById('mensuelCourant').value = ((consoKwH*prixC)/12).toFixed(2)
+                document.getElementById('mensuel2030').value = ((consoKwH*prix2030)/12).toFixed(2)
+                document.getElementById('mensuel2035').value = ((consoKwH*prix2035)/12).toFixed(2)
+
+                document.getElementById('annuelCourant').value = (consoKwH * prixC).toFixed(2)
+                document.getElementById('annuel2030').value =(consoKwH * prix2030).toFixed(2)
+                document.getElementById('annuel2035').value = (consoKwH * prix2035).toFixed(2)
+            }
+            
+            function remplirChampF() {
+                const consActuelle = parseFloat(document.getElementById('consActuelle').value)
+                const prixC = parseFloat(document.getElementById('prixCourant').value)
+                const prix2030 =parseFloat(document.getElementById('prix2030').value)
+                const prix2035 =parseFloat(document.getElementById('prix2035').value)
+                const factAct =document.getElementById('factAct')
+                const fact2030 = document.getElementById('fact2030')
+                const fact2035 = document.getElementById('fact2035')
+                
+
+                factAct.value = (consActuelle * prixC).toFixed(2)
+                fact2030.value = (consActuelle * prix2030).toFixed(2)
+                fact2035.value =(consActuelle * prix2035).toFixed(2)
+                
+
+                const moyenne = (parseFloat(factAct.value) + parseFloat(fact2030.value) + parseFloat(fact2035.value)) / 3;
+                document.getElementById('cout10').value = (moyenne*10).toFixed(2)
+            }
+            function calculG(){
+                const racTVA = document.getElementById('racTVA')
+                const coutGlobale = parseFloat(document.getElementById('coutGlobale').value) || 0
+                const primeAutoC = parseFloat(document.getElementById('primeAutoC').value) || 0
+                
+                const racTVAvalue = coutGlobale - primeAutoC
+                racTVA.value = racTVAvalue.toFixed(2) 
+                const racHT = document.getElementById('racHT')
+                const racHTvalue = racTVAvalue*0.8
+                racHT.value = racHTvalue.toFixed(2)
+                const economie25a = document.getElementById('economie25a')
+
+                const capaciteProduction = parseFloat(document.getElementById("capaciteProduction").value);
+                const prixC = parseFloat(document.getElementById('prixCourant').value)
+                let prix2030 = document.getElementById("prix2030").value;
+                let prix2035 = document.getElementById("prix2035").value;
+                let prixMoyen = (parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035))/ 3;
+                economie25a.value = ((prixMoyen * capaciteProduction) * 25).toFixed(2);
+                            
+                
+            }
+            function coutG(){
+                let bat =document.getElementById('nbBatterie').value
+                let panneau = document.getElementById('nbPanneau').value
+                document.getElementById('coutGlobale').value = (parseFloat(bat) + parseFloat(panneau)).toFixed(2)
+            }
+            document.addEventListener("DOMContentLoaded", () => {
+                document.body.addEventListener('click', (event) => {
+                    if (event.target && event.target.id === 'openTabButton') {
+                        const url = 'https://re.jrc.ec.europa.eu/pvg_tools/fr/';
+                        console.log('Bouton cliqué, ouverture du lien :', url);
+                        window.electron.openLink(url);
+                    }
+                });
+            });
+            
+
+    </script>
+    <main>
+        <fieldset class="step-container">
+            <script src="scriptForm2.js"></script>
+            <div class="stepper">
+                <div class="step step--1 step-active">Étape 1</div>
+                <div class="step step--2">Étape 2</div>
+                <div class="step step--3">Étape 3</div>
+                <div class="step step--3">Étape 4</div>
+            </div>
+            <form class="form form-active" id="form-step-1">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Analyse facture :</h1>
+                </div>
+                <label for="analyseFacture">Avez-vous déjà analysé votre facture ?</label>
+                <div id="analyseFacture">
+                    <br><label><input type="radio" name="analyseFacture" id="analyseFactureOui" value="1" checked> Oui</label>
+                    <label><input type="radio" name="analyseFacture" id="analyseFactureNon" value="0"> Non</label>
+                </div>
+                <br>
+                <input type="text" id="consoKwH" placeholder="Consommation (KwH)">
+                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle Totale">
+                <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)">
+                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement (HT)" oninput="montantG()">
+                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()">
+                <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
+                <input type="text" id="montantGlobalTot" placeholder="Montant Global (Taxes + Achemin. + TVA)" readonly>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
+                </div>
+                
+            </form>
+            <form class="form" id="form-step-2">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Simulation des coûts sur les prochaines années</h1>
+                </div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th id="annéeCourant"></th>
+                        <th>Prix 2030</th>
+                        <th>Prix 2035</th>
+                    </tr>
+                    <tr>
+                        <td>Prix du KwH</td>
+                        <td><input type="text" id="prixCourant" oninput="calculCout()"></td>
+                        <td><input type="text" id="prix2030" oninput="calculCout()"></td>
+                        <td><input type="text" id="prix2035" oninput="calculCout()"></td>
+                    </tr>
+                    <tr>
+                        <td>coût mensuel</td>
+                        <td><input type="text" id="mensuelCourant" readonly></td>
+                        <td><input type="text" id="mensuel2030" readonly></td>
+                        <td><input type="text" id="mensuel2035" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>coût annuel</td>
+                        <td><input type="text" id="annuelCourant" readonly></td>
+                        <td><input type="text" id="annuel2030" readonly></td>
+                        <td><input type="text" id="annuel2035" readonly></td>
+                    </tr>
+                    
+                </table>
+                <label for="montantTaxes10">Montant des taxes sur 10 ans (dont acheminement) :</label>
+                <input type="text" id="montantTaxes10" readonly>
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
+                </div>
+                
+
+            </form>
+            <form class="form" id="form-step-3">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Simulation des coûts sur les prochaines années</h1>
+                </div>
+                <label for="besoin">Estimez vous nécessaire d'agir ? </label>
+                <div id="besoin">
+                    <label><input type="radio" name="besoin" id="besoinOui" value="1" checked>Oui </label>
+                    <label><input type="radio" name="besoin" id="besoinNon" value="0">Non </label>
+                </div>
+                <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet"></textarea>
+                <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
+
+                <div class="parent-container">
+                    <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
+                    <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
+                </div>
+                
+
+            </form>
+            <form class="form" id="form-step-4">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
+                </div>
+                
+                <button type="button" id="openTabButton"><i class="fas fa-globe"></i></button>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Consommateur</th>
+                        <th></th>
+                        <th>Producteur</th>
+                    </tr>
+                    <tr>
+                        <td>Consommation Actuelle (kwH/an)</td>
+                        <td><input type="text" id="consActuelle" oninput="remplirChampF()"></td>
+                        <td>Capacité de production (Kwh/an)</td>
+                        <td><input type="text" id="capaciteProduction" ></td>
+                    </tr>
+                    <tr>
+                        <td id="annéeC">Facture 20</td>
+                        <td><input type="text" id="factAct" readonly></td>
+                        <td>Puissance Installation (KwC)</td>
+                        <td><input type="text" id="puisInsta"></td>
+                    </tr>
+                    <tr>
+                        <td>Facture 2030</td>
+                        <td><input type="text" id="fact2030" readonly></td>
+                        <td>Nombre de panneau (€)</td>
+                        <td><input type="text" id="nbPanneau" placeholder=""></td>
+                    </tr>
+                    <tr>
+                        <td>Facture 2035</td>
+                        <td><input type="text" id="fact2035" readonly></td>
+                        <td>Nombre de batteries (€)</td>
+                        <td><input type="text" id="nbBatterie" oninput="coutG()"></td>
+                    </tr>
+                    <tr>
+                        <td>Coût sur 10 ans</td>
+                        <td><input type="text" id="cout10" readonly></td>
+                        <td>Coût Global</td>
+                        <td><input type="text" id="coutGlobale" readonly></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Prime Autoconsommation</td>
+                        <td><input type="text" id="primeAutoC"oninput="calculG()"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Reste à charge (dont TVA)</td>
+                        <td><input type="text" id="racTVA" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Economie sur 25 ans</td>
+                        <td><input type="text" id="economie25a" readonly></td>
+                        <td>Reste à charge (HT)</td>
+                        <td><input type="text" id="racHT" readonly></td>    
+                    </tr>
+                </table>
+                
+                <!-- Fenêtre modale -->
+                <div id="modalChart" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <canvas id="chartC"></canvas>
+                    </div>
+                </div>
+                <div class="parent-container">
+                    <button id="Précédent" type="button" class="form__btn btn-prev" title="Précédent"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" id="genererChart"><i class="fas fa-chart-line" title="Générer le graphique"></i></button>
+                    <button type="button" class="form__btn btn-submit"><i class="fas fa-check" id="Valider" title="Valider"></i></button>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const generateButton = document.getElementById('genererChart');
+
+                        generateButton.addEventListener('click', () => {
+                            genererChart();
+                        });
+
+                        // Fonction pour générer un graphique dans une modale
+                        function genererChart() {
+                            // Créer un nouvel élément pour la modale
+                            const modal = document.createElement('div');
+                            modal.classList.add('modal');
+
+                            const modalContent = document.createElement('div');
+                            modalContent.classList.add('modal-content');
+                            
+                            const closeBtn = document.createElement('span');
+                            closeBtn.classList.add('close');
+                            closeBtn.innerHTML = '&times;';
+
+                            const canvas = document.createElement('canvas');
+                            canvas.id = 'chartC';
+
+                            // Ajouter le contenu à la modale
+                            modalContent.appendChild(closeBtn);
+                            modalContent.appendChild(canvas);
+                            modal.appendChild(modalContent);
+
+                            // Ajouter la modale au body
+                            document.body.appendChild(modal);
+
+                            // Afficher la modale
+                            modal.style.display = "block";
+
+                            // Initialiser le graphique dans le canvas
+                            const ctx1 = canvas.getContext('2d');
+
+                            // Si un graphique existe déjà, le détruire avant de créer un nouveau
+                            if (window.chart1) {
+                                window.chart1.destroy();
+                                window.chart1 = null; // Assurez-vous de bien libérer la référence
+                            }
+
+                            let factAct = document.getElementById("factAct").value;
+                            let fact2030 = document.getElementById("fact2030").value;
+                            let fact2035 = document.getElementById("fact2035").value;
+                            let MTA = document.getElementById("montantGlobalTot").value;
+                            const capaciteProduction = parseFloat(document.getElementById("capaciteProduction").value);
+                            const consActuelle = parseFloat(document.getElementById('consActuelle').value)
+                            const prixC = parseFloat(document.getElementById('prixCourant').value)
+                            let prix2030 = document.getElementById("prix2030").value;
+                            let prix2035 = document.getElementById("prix2035").value;
+                            const racTVA  = parseFloat(document.getElementById("racTVA").value);
+                            let coutMoyen = (parseFloat(factAct) + parseFloat(fact2030) + parseFloat(fact2035)) / 3;
+                            let prixMoyen = parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035);
+                            
+                            prixMoyen = prixMoyen / 3;
+                            let cout10 = coutMoyen * 10;
+                            let cout25 = coutMoyen * 25;
+                            let MTA10 = parseFloat(MTA) * 10;
+                            let MTA25 = parseFloat(MTA) * 25;
+                            let consAnnee1 = (consActuelle - parseFloat(capaciteProduction));
+                            let consR = (consAnnee1 * prixC) + racTVA;
+                            let cons = prixMoyen * consAnnee1;
+                            let cons10 = cons * 10;
+                            let cons25 = cons * 25;
+
+                            console.log(consR, ' ',consAnnee1,' ',cons10,' ',cons25 )
+                            // Créer un nouveau graphique
+                            window.chart1 = new Chart(ctx1, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Actuel', '10 ans', '25 ans'],
+                                    datasets: [
+                                        {
+                                            label: 'Coût consommateur sur 25 ans (€)',
+                                            data: [factAct, cout10, cout25],
+                                            borderColor: 'rgba(255, 1, 0, 1)',
+                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        },
+                                        {
+                                            label: 'Coût consommateur additionnels (Achemin.,TVA,CTA+CSPE) sur 25 ans (€)',
+                                            data: [MTA, MTA10, MTA25],
+                                            borderColor: 'rgba(200, 90, 0, 1)',
+                                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        },
+                                        {
+                                            label: 'Coût en tant que producteur sur 25 ans (€)',
+                                            data: [consR, cons10, cons25],
+                                            borderColor: 'rgba(1, 200, 69, 1)',
+                                            backgroundColor: 'rgba(1,200, 69, 0.2)',
+                                            fill: true,
+                                            tension: 0.4,
+                                            borderWidth: 2
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Ajouter un événement pour fermer la modale
+                            closeBtn.addEventListener('click', () => {
+                                modal.style.display = "none";
+                                document.body.removeChild(modal); // Supprimer la modale du DOM
+                            });
+
+                            // Fermer la modale si l'utilisateur clique en dehors de la fenêtre modale
+                            window.addEventListener('click', (event) => {
+                                if (event.target === modal) {
+                                    modal.style.display = "none";
+                                    document.body.removeChild(modal); // Supprimer la modale du DOM
+                                }
+                            });
+                        }
+                    });
+
+                </script>
+                
+                
+            </form>    
+        </fieldset>
+    </main>
+   
+</body>
+</html>
