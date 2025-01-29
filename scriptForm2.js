@@ -84,10 +84,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.getElementById("calculeProd").addEventListener("click", async () => {
         let adresseClient = document.getElementById("adresseClient").value;
-        const coordonnées = await window.electron.getCoordonnee(adresseClient)
-        let lat = coordonnées.lat;
-        let lon = coordonnées.lon;
-        await recupDonnee(lat, lon);
+        if (!adresseClient) {
+            alert("Veuillez entrer une adresse.");
+            return;
+        }
+        try{
+            const coordonnées = await window.electron.getCoordonnee(adresseClient)
+            let lat = coordonnées.lat;
+            let lon = coordonnées.lon;
+            await recupDonnee(lat, lon);
+        } catch(error) {
+            console.error("Erreur lors de la récupération des coordonnées :", error);
+            alert("Impossible d'obtenir les coordonnées. Vérifiez l'adresse.");
+        }
+        
     })
     async function recupDonnee(lat,lon) {
         let typePS = document.getElementById("typePS").value;
@@ -99,9 +109,18 @@ document.addEventListener("DOMContentLoaded", () => {
         let optiIncl1 = document.getElementById("optiIncl1").value;
         let optiIncl2 = document.getElementById("optiIncl2").value;
 
-
-        const capaciteProd = await window.electron.getCapaciteProd(lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2);
-        console.log(capaciteProd.data);
+        if (!typePS || !puisKwP || !perteSy || !posMontage || !incl || !azimut || !optiIncl1 || !optiIncl2) {
+            alert("Veuillez remplir tous les champs.");
+            return;
+        }
+        try {
+            const capaciteProd = await window.electron.getCapaciteProd(lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2);
+            console.log(capaciteProd.data);
+        } catch(error){
+            console.error("Erreur lors de la récupération des données :", error);
+            alert("Impossible de récupérer la capacité de production.");
+        }
+        
     }
     
     // Soumission du formulaire
