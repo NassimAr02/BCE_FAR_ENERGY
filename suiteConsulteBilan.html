@@ -23,91 +23,6 @@
         });
         
 
-            function montantG() {
-                const acheminement = parseFloat(document.getElementById("partAcheminement")?.value) || 0;
-                const CTA_CSPE = parseFloat(document.getElementById("CTA_CSPE")?.value) || 0;
-                const TVA = parseFloat(document.getElementById("TVA")?.value) || 0;
-
-
-                const montantGl = acheminement + CTA_CSPE + TVA;
-                const montantGlobalTot = document.getElementById("montantGlobalTot");
-                const montant10 = (montantGl * 10).toFixed(2)
-                if (montantGlobalTot) {
-                    montantGlobalTot.value = montantGl.toFixed(2); // Formate en 2 décimales
-                }
-                document.getElementById('montantTaxes10').value = montant10
-            }
-            
-            function calculCout(){
-                const consoKwH =parseFloat(document.getElementById('consoKwH').value)
-                const prixC = parseFloat(document.getElementById('prixCourant').value)
-                const prix2030 =parseFloat(document.getElementById('prix2030').value)
-                const prix2035 =parseFloat(document.getElementById('prix2035').value)
-
-                document.getElementById('mensuelCourant').value = ((consoKwH*prixC)/12).toFixed(2)
-                document.getElementById('mensuel2030').value = ((consoKwH*prix2030)/12).toFixed(2)
-                document.getElementById('mensuel2035').value = ((consoKwH*prix2035)/12).toFixed(2)
-
-                document.getElementById('annuelCourant').value = (consoKwH * prixC).toFixed(2)
-                document.getElementById('annuel2030').value =(consoKwH * prix2030).toFixed(2)
-                document.getElementById('annuel2035').value = (consoKwH * prix2035).toFixed(2)
-            }
-            
-            function remplirChampF() {
-                const consActuelle = parseFloat(document.getElementById('consActuelle').value)
-                const prixC = parseFloat(document.getElementById('prixCourant').value)
-                const prix2030 =parseFloat(document.getElementById('prix2030').value)
-                const prix2035 =parseFloat(document.getElementById('prix2035').value)
-                const factAct =document.getElementById('factAct')
-                const fact2030 = document.getElementById('fact2030')
-                const fact2035 = document.getElementById('fact2035')
-                
-
-                factAct.value = (consActuelle * prixC).toFixed(2)
-                fact2030.value = (consActuelle * prix2030).toFixed(2)
-                fact2035.value =(consActuelle * prix2035).toFixed(2)
-                
-
-                const moyenne = (parseFloat(factAct.value) + parseFloat(fact2030.value) + parseFloat(fact2035.value)) / 3;
-                document.getElementById('cout10').value = (moyenne*10).toFixed(2)
-            }
-            function calculG(){
-                const racTVA = document.getElementById('racTVA')
-                const coutGlobale = parseFloat(document.getElementById('coutGlobale').value) || 0
-                const primeAutoC = parseFloat(document.getElementById('primeAutoC').value) || 0
-                
-                const racTVAvalue = coutGlobale - primeAutoC
-                racTVA.value = racTVAvalue.toFixed(2) 
-                const racHT = document.getElementById('racHT')
-                const racHTvalue = racTVAvalue*0.8
-                racHT.value = racHTvalue.toFixed(2)
-                const economie25a = document.getElementById('economie25a')
-
-                const capaciteProduction = parseFloat(document.getElementById("capaciteProduction").value);
-                const prixC = parseFloat(document.getElementById('prixCourant').value)
-                let prix2030 = document.getElementById("prix2030").value;
-                let prix2035 = document.getElementById("prix2035").value;
-                let prixMoyen = (parseFloat(prixC) + parseFloat(prix2030) + parseFloat(prix2035))/ 3;
-                economie25a.value = ((prixMoyen * capaciteProduction) * 25).toFixed(2);
-                            
-                
-            }
-            function coutG(){
-                let bat =document.getElementById('nbBatterie').value
-                let panneau = document.getElementById('nbPanneau').value
-                document.getElementById('coutGlobale').value = (parseFloat(bat) + parseFloat(panneau)).toFixed(2)
-            }
-            document.addEventListener("DOMContentLoaded", () => {
-                document.body.addEventListener('click', (event) => {
-                    if (event.target && event.target.id === 'openTabButton') {
-                        const url = 'https://re.jrc.ec.europa.eu/pvg_tools/fr/';
-                        console.log('Bouton cliqué, ouverture du lien :', url);
-                        window.electron.openLink(url);
-                    }
-                });
-            });
-            
-
     </script>
     <main>
         <fieldset class="step-container">
@@ -204,7 +119,6 @@
                     <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
                 </div>
                 
-                <button type="button" id="openTabButton"><i class="fas fa-globe"></i></button>
                 <table>
                     <tr>
                         <th></th>
@@ -407,7 +321,8 @@
                 </script>
                 
                 
-            </form>    
+            </form> 
+            <script src="req.js"></script>   
         </fieldset>
     </main>
    
