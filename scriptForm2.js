@@ -82,8 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     }
-    async function recupDonnee() {
+    document.getElementById("calculeProd").addEventListener("click", async () => {
         let adresseClient = document.getElementById("adresseClient").value;
+        const coordonnées = await window.electron.getCoordonnee(adresseClient)
+        let lat = coordonnées.lat;
+        let lon = coordonnées.lon;
+        await recupDonnee(lat, lon);
+    })
+    async function recupDonnee(lat,lon) {
         let typePS = document.getElementById("typePS").value;
         let puisKwP = document.getElementById("puisKwP").value;
         let perteSy = document.getElementById("perteSy").value;
@@ -94,7 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let optiIncl2 = document.getElementById("optiIncl2").value;
 
 
-        
+        const capaciteProd = await window.electron.getCapaciteProd(lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2);
+        console.log(capaciteProd.data);
     }
     
     // Soumission du formulaire

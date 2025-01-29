@@ -23,5 +23,7 @@ contextBridge.exposeInMainWorld('electron', {
     selectVueBilan: () => ipcRenderer.invoke("selectVueBilan"),
     selectRClient: (SIRET) => ipcRenderer.invoke("selectRClient", SIRET),
     selectClient: (SIRET) => ipcRenderer.invoke("selectClient",SIRET),
-    selectBilanSimulation: (SIRET,numCO) => ipcRenderer.invoke("selectBilanSimulation",SIRET,numCO)
+    selectBilanSimulation: (SIRET,numCO) => ipcRenderer.invoke("selectBilanSimulation",SIRET,numCO),
+    getCoordonnee: (adresse) => ipcRenderer.invoke("recupCoordonnee",adresse),
+    getCapaciteProd: (lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2) => ipcRenderer.invoke("PVGIS-API",lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2)
 });

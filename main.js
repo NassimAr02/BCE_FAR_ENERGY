@@ -384,9 +384,11 @@ function clearDatabase() {
         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
     }
 }
-ipcMain.handle("PVGIS-API", async (event,typePS, puisKwP,perteSy,posMontage,incl,azimut,optiIncl,optiAngle) => {
+ipcMain.handle("PVGIS-API", async (event,lati,long,typePS, puisKwP,perteSy,posMontage,incl,azimut,optiIncl,optiAngle) => {
     try {
         const reponse = await axios.post("https://re.jrc.ec.europa.eu/api/v5_1/tool_name?param1=value1&param2=value2&...",{
+            lat: lati,
+            lon: long,
             peakpower: puisKwP,
             pvtechchoice: typePS,
             mountingplace: posMontage,
@@ -397,16 +399,23 @@ ipcMain.handle("PVGIS-API", async (event,typePS, puisKwP,perteSy,posMontage,incl
             optimalangles: optiAngle
 
         })
-        return reponse;
+        return reponse.data;
     }catch(err){
         return { message: "Erreur API", error: err.message}
     }
 })
-ipcMain.handle("recupCoordonnée", async (event,adresse) => {
+ipcMain.handle("recupCoordonnee", async (event,adresse) => {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(adresse)}&format=json`;
     try {
-
-    } catch (err){
+        const response = await axios.get(url);
+        const data = response.data;
         
+        if (data.length > 0) {
+            return { lat: data[0].lat, lon: data[0].lon };
+        }
+        return { error: "Adresse introuvable" };
+    } catch (error) {
+        return { error: "Erreur lors de la récupération des coordonnées" };
     }
 })
 
