@@ -5,6 +5,8 @@ const Database = require('better-sqlite3');
 const argon2 = require('argon2');
 const { shell } = require('electron');
 const Chart = require('chart.js');
+const axios = require("axios");
+const { type } = require('os');
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
 let dbBCE;
 
@@ -382,6 +384,31 @@ function clearDatabase() {
         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
     }
 }
+ipcMain.handle("PVGIS-API", async (event,typePS, puisKwP,perteSy,posMontage,incl,azimut,optiIncl,optiAngle) => {
+    try {
+        const reponse = await axios.post("https://re.jrc.ec.europa.eu/api/v5_1/tool_name?param1=value1&param2=value2&...",{
+            peakpower: puisKwP,
+            pvtechchoice: typePS,
+            mountingplace: posMontage,
+            loss: perteSy,
+            angle: incl,
+            aspect: azimut,
+            optimalinclination: optiIncl,
+            optimalangles: optiAngle
+
+        })
+        return reponse;
+    }catch(err){
+        return { message: "Erreur API", error: err.message}
+    }
+})
+ipcMain.handle("recupCoordonnée", async (event,adresse) => {
+    try {
+
+    } catch (err){
+        
+    }
+})
 
 ipcMain.on('open-link', (event, url) => {
     console.log('URL reçue pour ouvrir un lien externe :', url);

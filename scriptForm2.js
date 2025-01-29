@@ -82,6 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     }
+    async function recupDonnee() {
+        let adresseClient = document.getElementById("adresseClient").value;
+        let typePS = document.getElementById("typePS").value;
+        let puisKwP = document.getElementById("puisKwP").value;
+        let perteSy = document.getElementById("perteSy").value;
+        let posMontage = document.getElementById("posMontage").value;
+        let incl = document.getElementById("incl").value;
+        let azimut = document.getElementById("azimut").value;
+        let optiIncl1 = document.getElementById("optiIncl1").value;
+        let optiIncl2 = document.getElementById("optiIncl2").value;
+
+
+        
+    }
     
     // Soumission du formulaire
     document.querySelector(".btn-submit").addEventListener("click", async (event) => {

@@ -116,7 +116,8 @@
                 <div class="step step--1 step-active">Étape 1</div>
                 <div class="step step--2">Étape 2</div>
                 <div class="step step--3">Étape 3</div>
-                <div class="step step--3">Étape 4</div>
+                <div class="step step--4">Étape 4</div>
+                <div class="step step--5">Étape Finale</div>
             </div>
             <form class="form form-active" id="form-step-1">
                 <div class="form--header-container">
@@ -200,6 +201,35 @@
 
             </form>
             <form class="form" id="form-step-4">
+                <div class="form--header-container">
+                    <h1 class="form--header-title">Calcul de la capacité de production</h1>
+                </div>
+                        <input type="text" id="adresseClient">
+                        <select name="typePS" id="typePS">
+                            <option value="crystSi">Silicium cristallin</option>
+                            <option value="CIS">CIS</option>
+                            <option value="CdTe">CdTe</option>
+                            <option value="Unknown">Inconnu</option>
+                        </select>
+                        <input type="text" id="puisKwP" placeholder="Puissance PV crête installée (kWp)">
+                        <input type="text" id="perteSy" placeholder="Perte du systeme (%)">
+                        <select name="posMontage" id="posMontage">
+                            <option value="free">Position Libre</option>
+                            <option value="building">Sur toit / intégré au batiment</option>
+                        </select>
+                        <input type="text" id="incl" placeholder="Inclinaison (°)">
+                        <input type="text" id="azimut" placeholder="Azimut (°)">
+                        <label for="optiIncl"> Optimisation</label>
+                        <label for="optiIncl1"></label><input type="radio" name="optiIncl" id="optiIncl1" value="1">
+                        <label for="optiIncl2"></label><input type="text" name="optiIncl2" id="optiIncl2" value="1">
+                    <div class="parent-container">
+                        <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
+                        <button type="button" id="calculeProd"><i class="fas fa-eye" title="Calculer la capacité de production"></i></button>
+                        <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
+                    </div>
+
+            </form>
+            <form class="form" id="form-step-5">
                 <div class="form--header-container">
                     <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
                 </div>
