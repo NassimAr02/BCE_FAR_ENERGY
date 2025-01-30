@@ -58,7 +58,7 @@ async function remplirChampR(SIRET) {
         const RClient = await window.electron.selectRClient(SIRET);
 
         // Vérifiez si les données sont correctes
-        console.log(numCO, SIRET, "Données reçues :", RClient);
+        // console.log(numCO, SIRET, "Données reçues :", RClient);
 
         if (RClient && RClient.length > 0) {
             // Supposons que RClient est un tableau d'objets

@@ -1,7 +1,7 @@
 function selectVueBilan() {
     window.electron.selectVueBilan() // Appel à l'API exposée par le preload
         .then((data) => {
-            console.log('Données reçues:', data);
+            // console.log('Données reçues:', data);
             const table = document.getElementById("table-body"); // Conteneur du tableau
             table.innerHTML = ''; // Vider les anciens résultats du tableau
 

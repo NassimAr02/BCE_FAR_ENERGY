@@ -10,9 +10,9 @@ contextBridge.exposeInMainWorld('electron', {
         horaireOuverture, dateCreation, consommationAnnuelle, proprieteMur, dureeAmortissement, depenseElec,
         natureProjet, puissanceCompteur, ampérage, pointLivraison, typeCourant),
     insertRepresentantClient: (SIRET,nomR,prenomR,telR,emailR) => ipcRenderer.invoke("insertRepresentantClient",SIRET,nomR,prenomR,telR,emailR), 
-    insertBilanSimulation: (consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+    insBilanSimulation: (analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
         motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
-        puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET) => ipcRenderer.invoke("insertBilanSimulation",consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET),
+        puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET) => ipcRenderer.invoke("insertBilanSimulation",analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET),
     openLink: (url) => {
         console.log('URL envoyée à openLink :', url);
         ipcRenderer.send('open-link', url);
@@ -25,5 +25,7 @@ contextBridge.exposeInMainWorld('electron', {
     selectClient: (SIRET) => ipcRenderer.invoke("selectClient",SIRET),
     selectBilanSimulation: (SIRET,numCO) => ipcRenderer.invoke("selectBilanSimulation",SIRET,numCO),
     getCoordonnee: (adresse) => ipcRenderer.invoke("recupCoordonnee",adresse),
-    getCapaciteProd: (lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2) => ipcRenderer.invoke("PVGIS-API",lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2)
+    getCapaciteProd: (lati, long, typePS, puisKwP, perteSy, posMontage, incl, azimut, optiIncl, optiAngle) => {
+        return ipcRenderer.invoke("PVGIS-API", lati, long, typePS, puisKwP, perteSy, posMontage, incl, azimut, optiIncl, optiAngle);
+    }
 });

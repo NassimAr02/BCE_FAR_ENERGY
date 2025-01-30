@@ -31,10 +31,10 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Représentant Client :</h1>
                 </div>
-                <input type="text" id="nomR" placeholder="Nom du représentant" required>
-                <input type="text" id="prenomR" placeholder="Prénom du représentant" required>
-                <input type="tel" id="telR" placeholder="Téléphone du représentant" pattern="\d{10}" required>
-                <input type="email" id="emailR" placeholder="Email du représentant" required>
+                <input type="text" id="nomR" placeholder="Nom du représentant" readonly>
+                <input type="text" id="prenomR" placeholder="Prénom du représentant" readonly>
+                <input type="tel" id="telR" placeholder="Téléphone du représentant" pattern="\d{10}" readonly>
+                <input type="email" id="emailR" placeholder="Email du représentant" readonly>
                 <div class="parent-container">
                     <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
                 </div>
@@ -46,13 +46,13 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Information sur l'entreprise :</h1>
                 </div>
-                <input type="text" id="SIRET" placeholder="Numéro SIRET" required>
-                <input type="text" id="raisonSociale" placeholder="Raison sociale" required>
-                <input type="text" id="adresse" placeholder="Adresse" required>
-                <input type="text" id="secteurActivite" placeholder="Secteur d'activité" required>
-                <input type="text" id="effectifEntreprise" placeholder="Effectif de l'entreprise" required>
-                <input type="text" id="horaireOuverture" placeholder="Horaire d'ouverture" required>
-                <label for="dateCreation">Date création entreprise</label><input type="date" id="dateCreation" placeholder="Date de création" required>
+                <input type="text" id="SIRET" placeholder="Numéro SIRET" readonly>
+                <input type="text" id="raisonSociale" placeholder="Raison sociale" readonly>
+                <input type="text" id="adresse" placeholder="Adresse" readonly>
+                <input type="text" id="secteurActivite" placeholder="Secteur d'activité" readonly>
+                <input type="text" id="effectifEntreprise" placeholder="Effectif de l'entreprise" readonly>
+                <input type="text" id="horaireOuverture" placeholder="Horaire d'ouverture" readonly>
+                <label for="dateCreation">Date création entreprise</label><input type="date" id="dateCreation" placeholder="Date de création" readonly>
                 <div class="parent-container">
                     <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
                     <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
@@ -65,16 +65,16 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Projet :</h1>
                 </div>
-                <input type="text" id="consommationAnnuelle" placeholder="Consommation annuelle" required>
+                <input type="text" id="consommationAnnuelle" placeholder="Consommation annuelle" readonly>
                 <label for="proprieteMur">Propriété des murs :</label>
                 <div id="proprieteMur">
-                    <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="1" checked> Oui</label>
-                    <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="0"> Non</label>
+                    <label><input type="radio" id="proprieteMurOui" name="proprieteMur" value="1"  disabled> Oui</label>
+                    <label><input type="radio" id="proprieteMurNon" name="proprieteMur" value="0" disabled> Non</label>
                 </div>
-                <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement">
-                <input type="text" id="depenseElec" placeholder="Dépense Électrique" required>
+                <input type="text" id="dureeAmortissement" placeholder="Durée d'amortissement" readonly>
+                <input type="text" id="depenseElec" placeholder="Dépense Électrique" readonly>
                 <label for="natureProjet">Nature du projet :</label>
-                <select id="natureProjet" required>
+                <select id="natureProjet" disabled>
                     <option value="">-- Sélectionnez une option --</option>
                     <option value="Autoconsommation">Autoconsommation</option>
                     <option value="Revente du surplus">Revente du surplus</option>
@@ -91,11 +91,11 @@
                 <div class="form--header-container">
                     <h1 class="form--header-title">Equipement Client :</h1>
                 </div>
-                <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur" required>
-                <input type="text" id="ampérage" placeholder="Ampérage" required>
-                <input type="text" id="pointLivraison" placeholder="Point de livraison" required>
+                <input type="text" id="puissanceCompteur" placeholder="Puissance du compteur" readonly>
+                <input type="text" id="ampérage" placeholder="Ampérage" readonly>
+                <input type="text" id="pointLivraison" placeholder="Point de livraison" readonly>
                 <label for="typeCourant">
-                    <select id="typeCourant">
+                    <select id="typeCourant" disabled>
                         <option value="">-- Sélectionnez une option --</option>
                         <option value="Monophasé">Monophasé</option>
                         <option value="Triphasé">Triphasé</option>

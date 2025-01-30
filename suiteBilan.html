@@ -200,44 +200,67 @@
                 
 
             </form>
-            <form class="form" id="form-step-4">
-                <div class="form--header-container">
-                    <h1 class="form--header-title">Calcul de la capacité de production</h1>
-                </div>
-                        <input type="text" id="adresseClient" placeholder="Adresse Installation">
-                        <select name="typePS" id="typePS">
-                            <option value="crystSi">Silicium cristallin</option>
-                            <option value="CIS">CIS</option>
-                            <option value="CdTe">CdTe</option>
-                            <option value="Unknown">Inconnu</option>
-                        </select>
-                        <input type="text" id="puisKwP" placeholder="Puissance PV crête installée (kWp)">
-                        <input type="text" id="perteSy" placeholder="Perte du systeme (%)">
-                        <select name="posMontage" id="posMontage">
-                            <option value="free">Position Libre</option>
-                            <option value="building">Sur toit / intégré au batiment</option>
-                        </select>
-                        <input type="text" id="incl" placeholder="Inclinaison (°)">
-                        <input type="text" id="azimut" placeholder="Azimut (°)">
-                        <div class="checkbox-group">
-                            <input type="checkbox" name="optiIncl" id="optiIncl1" value="1" class="single-checkbox">
-                            <label for="optiIncl1">Optimiser l'Inclinaison</label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" name="optiIncl" id="optiIncl2" value="2" class="single-checkbox">
-                            <label for="optiIncl2">Optimiser l'Inclinaison et l'Azimut</label>
-                        </div>
-                        
-                        <script>
-                            document.querySelectorAll(".single-checkbox").forEach(checkbox => {
-                                checkbox.addEventListener("change", function() {
-                                    document.querySelectorAll(".single-checkbox").forEach(cb => {
-                                        if (cb !== this) cb.checked = false;
-                                    });
+                <form class="form" id="form-step-4">
+                    <div class="form--header-container">
+                        <h1 class="form--header-title">Calcul de la capacité de production</h1>
+                    </div>
+                    <input type="text" id="adresseClient" placeholder="Adresse Installation">
+                    <select name="typePS" id="typePS">
+                        <option value="crystSi">Silicium cristallin</option>
+                        <option value="CIS">CIS</option>
+                        <option value="CdTe">CdTe</option>
+                        <option value="Unknown">Inconnu</option>
+                    </select>
+                    <input type="text" id="puisKwP" placeholder="Puissance PV crête installée (kWp)">
+                    <input type="text" id="perteSy" placeholder="Perte du systeme (%)">
+                    <select name="posMontage" id="posMontage">
+                        <option value="free">Position Libre</option>
+                        <option value="building">Sur toit / intégré au bâtiment</option>
+                    </select>
+                    <input type="text" id="incl" placeholder="Inclinaison (°)">
+                    <input type="text" id="azimut" placeholder="Azimut (°)">
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="optiIncl" id="optiIncl1" value="1" class="single-checkbox">
+                        <label for="optiIncl1">Optimiser l'Inclinaison</label>
+                    </div>
+                
+                    <div class="checkbox-group">
+                        <input type="checkbox" name="optiIncl" id="optiIncl2" value="2" class="single-checkbox">
+                        <label for="optiIncl2">Optimiser l'Inclinaison et l'Azimut</label>
+                    </div>
+                
+                    <script>
+                        document.querySelectorAll(".single-checkbox").forEach(checkbox => {
+                            checkbox.addEventListener("change", function() {
+                                const incl = document.getElementById("incl");
+                                const azimut = document.getElementById("azimut");
+                
+                                // Si l'une des cases est cochée
+                                if (document.getElementById("optiIncl1").checked) {
+                                    // Vider et désactiver les champs
+                                    incl.value = "";
+                                    azimut.value = "";
+                                    incl.disabled = true;
+                                    azimut.disabled = false;
+                                } else if(document.getElementById("optiIncl2").checked) {
+                                    // Activer et laisser les champs modifiables
+                                    incl.value = "";
+                                    azimut.value = "";
+                                    incl.disabled = true;
+                                    azimut.disabled = true;
+                                } else {
+                                    incl.disabled = false;
+                                    azimut.disabled = false;
+                                }
+                
+                                // Décocher les autres cases
+                                document.querySelectorAll(".single-checkbox").forEach(cb => {
+                                    if (cb !== this) cb.checked = false;
                                 });
                             });
-                        </script>
+                        });
+                    </script>
+                
                         <input type="text" id="capaProd" placeholder="Capacité de production annuel (Kwh/An)">
 
                     <div class="parent-container">
@@ -252,7 +275,6 @@
                     <h1 class="form--header-title">Plan Autoconsommation Energie</h1>
                 </div>
                 
-                <button type="button" id="openTabButton"><i class="fas fa-globe"></i></button>
                 <table>
                     <tr>
                         <th></th>
@@ -262,7 +284,7 @@
                     </tr>
                     <tr>
                         <td>Consommation Actuelle (kwH/an)</td>
-                        <td><input type="text" id="consActuelle" oninput="remplirChampF()"></td>
+                        <td><input type="text" id="consActuelle" ></td>
                         <td>Capacité de production (Kwh/an)</td>
                         <td><input type="text" id="capaciteProduction" ></td>
                     </tr>

@@ -39,16 +39,16 @@
                 </div>
                 <label for="analyseFacture">Avez-vous déjà analysé votre facture ?</label>
                 <div id="analyseFacture">
-                    <br><label><input type="radio" name="analyseFacture" id="analyseFactureOui" value="1" checked> Oui</label>
-                    <label><input type="radio" name="analyseFacture" id="analyseFactureNon" value="0"> Non</label>
+                    <br><label><input type="radio" name="analyseFacture" id="analyseFactureOui" value="1" disabled> Oui</label>
+                    <label><input type="radio" name="analyseFacture" id="analyseFactureNon" value="0" disabled> Non</label>
                 </div>
                 <br>
-                <input type="text" id="consoKwH" placeholder="Consommation (KwH)">
-                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle Totale">
-                <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)">
-                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement (HT)" oninput="montantG()">
-                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()">
-                <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()">
+                <input type="text" id="consoKwH" placeholder="Consommation (KwH)" readonly>
+                <input type="text" id="montantGlobal" placeholder="Montant consommation annuelle Totale" readonly>
+                <input type="text" id="abo_conso" placeholder="Abonnement + conso.(HT)" readonly>
+                <input type="text" id="partAcheminement" placeholder="Dont part Acheminement (HT)" oninput="montantG()" readonly>
+                <input type="text" id="CTA_CSPE" placeholder="Taxes et contributions (CTA + CSPE (HT))" oninput="montantG()" readonly>
+                <input type="text" id="TVA" placeholder="TVA (20% + 5.5%)" oninput="montantG()" readonly>
                 <input type="text" id="montantGlobalTot" placeholder="Montant Global (Taxes + Achemin. + TVA)" readonly>
                 <div class="parent-container">
                     <button type="button" class="form__btn btn-next"><i class="fas fa-arrow-right" id="Suivant" title="Suivant"></i></button>
@@ -68,9 +68,9 @@
                     </tr>
                     <tr>
                         <td>Prix du KwH</td>
-                        <td><input type="text" id="prixCourant" oninput="calculCout()"></td>
-                        <td><input type="text" id="prix2030" oninput="calculCout()"></td>
-                        <td><input type="text" id="prix2035" oninput="calculCout()"></td>
+                        <td><input type="text" id="prixCourant" oninput="calculCout()" readonly></td>
+                        <td><input type="text" id="prix2030" oninput="calculCout()" readonly></td>
+                        <td><input type="text" id="prix2035" oninput="calculCout()" readonly></td>
                     </tr>
                     <tr>
                         <td>coût mensuel</td>
@@ -101,11 +101,11 @@
                 </div>
                 <label for="besoin">Estimez vous nécessaire d'agir ? </label>
                 <div id="besoin">
-                    <label><input type="radio" name="besoin" id="besoinOui" value="1" checked>Oui </label>
-                    <label><input type="radio" name="besoin" id="besoinNon" value="0">Non </label>
+                    <label><input type="radio" name="besoin" id="besoinOui" value="1" disabled>Oui </label>
+                    <label><input type="radio" name="besoin" id="besoinNon" value="0" disabled>Non </label>
                 </div>
-                <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet"></textarea>
-                <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"></textarea>
+                <label for="motivationProjet">Motivation Projet :</label><textarea name="motivationProjet" id="motivationProjet" readonly></textarea>
+                <label for="refusProjet">Refus Projet</label><textarea name="refusProjet" id="refusProjet"readonly></textarea>
 
                 <div class="parent-container">
                     <button type="button" class="form__btn btn-prev"><i class="fas fa-arrow-left" id="Précédent" title="Précédent"></i></button>
@@ -128,27 +128,27 @@
                     </tr>
                     <tr>
                         <td>Consommation Actuelle (kwH/an)</td>
-                        <td><input type="text" id="consActuelle" oninput="remplirChampF()"></td>
+                        <td><input type="text" id="consActuelle" oninput="remplirChampF()"readonly></td>
                         <td>Capacité de production (Kwh/an)</td>
-                        <td><input type="text" id="capaciteProduction" ></td>
+                        <td><input type="text" id="capaciteProduction" readonly></td>
                     </tr>
                     <tr>
                         <td id="annéeC">Facture 20</td>
                         <td><input type="text" id="factAct" readonly></td>
                         <td>Puissance Installation (KwC)</td>
-                        <td><input type="text" id="puisInsta"></td>
+                        <td><input type="text" id="puisInsta" readonly></td>
                     </tr>
                     <tr>
                         <td>Facture 2030</td>
                         <td><input type="text" id="fact2030" readonly></td>
                         <td>Nombre de panneau (€)</td>
-                        <td><input type="text" id="nbPanneau" placeholder=""></td>
+                        <td><input type="text" id="nbPanneau"  readonly></td>
                     </tr>
                     <tr>
                         <td>Facture 2035</td>
                         <td><input type="text" id="fact2035" readonly></td>
                         <td>Nombre de batteries (€)</td>
-                        <td><input type="text" id="nbBatterie" oninput="coutG()"></td>
+                        <td><input type="text" id="nbBatterie" oninput="coutG()" readonly></td>
                     </tr>
                     <tr>
                         <td>Coût sur 10 ans</td>
@@ -160,7 +160,7 @@
                         <td></td>
                         <td></td>
                         <td>Prime Autoconsommation</td>
-                        <td><input type="text" id="primeAutoC"oninput="calculG()"></td>
+                        <td><input type="text" id="primeAutoC"oninput="calculG()" ></td>
                     </tr>
                     <tr>
                         <td></td>

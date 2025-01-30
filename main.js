@@ -1,5 +1,5 @@
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path')
 const Database = require('better-sqlite3');
 const argon2 = require('argon2');
@@ -7,6 +7,8 @@ const { shell } = require('electron');
 const Chart = require('chart.js');
 const axios = require("axios");
 const { type } = require('os');
+const { promisify } = require('util');
+
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
 let dbBCE;
 
@@ -18,7 +20,8 @@ const createWindow = () => {
     webPreferences: {
         nodeIntegration: true,
         contextIsolation: true,
-        preload: path.join(__dirname, 'preload.js')
+        preload: path.join(__dirname, 'preload.js'),
+        devTools: false
     }
   })
   // Cette fonction récupère toutes les données de la base de données
@@ -119,6 +122,7 @@ async function initDatabase() {
 
             CREATE TABLE IF NOT EXISTS bilanSimulation(
                 numBilanSimulation INTEGER PRIMARY KEY AUTOINCREMENT,
+                analyseFacture BOOLEAN,
                 consoKwH DECIMAL(15,2),
                 montantGlobal DECIMAL(15,2),
                 abo_Conso VARCHAR(50),
@@ -268,12 +272,12 @@ ipcMain.handle('selectVueBilan', async (event) => {
 
 
 // Fonction pour insérer un conseiller
-async function insertConseiller(nomCO, prenomCO, mdpCO) {
-    const hash = await argon2.hash(mdpCO); // Hacher le mot de passe
-    const req = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
-    const idCO = `${nomCO}.${prenomCO}`; // Génération de l'identifiant
-    req.run(nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
-}
+// async function insertConseiller(nomCO, prenomCO, mdpCO) {
+//     const hash = await argon2.hash(mdpCO); // Hacher le mot de passe
+//     const req = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+//     const idCO = `${nomCO}.${prenomCO}`; // Génération de l'identifiant
+//     req.run(nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
+// }
 
 
 
@@ -344,20 +348,39 @@ ipcMain.handle('login', async (event, username, password) => {
 
 
 
-async function insertBilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
-    motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
-    puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET){
-    const req = dbBCE.prepare('INSERT INTO bilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCO) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
-    req.run(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
-        motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
-        puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCon)
+async function insertBilanSimulation(analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, CTA_CSPE, TVA, necessite,
+    motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, montantGlobalTA, capaciteProd,
+    puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET) {
+
+
+    try {
+        const req = dbBCE.prepare(`
+            INSERT INTO bilanSimulation (analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, 
+                CTA_CSPE, TVA, necessite, motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, 
+                montantGlobalTA, capaciteProd, puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, 
+                economie25a, SIRET, numCO) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        console.log("Nombre de paramètres :", arguments.length);
+        req.run(analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, CTA_CSPE, TVA, necessite,
+                motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, montantGlobalTA, capaciteProd,
+                puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET, numCon);
+        
+        return "BilanSimulation ajouté avec succès";
+    } catch (err) {
+        console.error("Erreur lors de l'insertion du BilanSimulation :", err);
+        throw new Error(`Erreur lors de l'ajout du BilanSimulation : ${err.message}`);
+    }
 }
 
-ipcMain.handle('insertBilanSimulation',async(event,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+
+
+ipcMain.handle('insertBilanSimulation',async(event,analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
     motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
     puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET)=>{
     try {
-        await insertBilanSimulation(consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+        await insertBilanSimulation(analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
             motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
             puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET)
         return 'BilanSimulation ajouté avec succès';
@@ -397,27 +420,10 @@ ipcMain.handle("PVGIS-API", async (event, lati, long, typePS, puisKwP, perteSy, 
         url.searchParams.append("aspect", azimut);
         url.searchParams.append("optimalinclination", optiIncl);
         url.searchParams.append("optimalangles", optiAngle);
-
-        // Afficher l'URL complète de la requête
         console.log("Requête envoyée : ", url.toString());
 
         const response = await axios.get(url.toString());
-
-        // Vérification si la clé "E_m" est présente dans la réponse
-        if (response.data && response.data.E_m && Array.isArray(response.data.E_m)) {
-            // Calcul du total annuel en additionnant toutes les valeurs de E_m
-            const totalAnnuel = response.data.E_m.reduce((acc, currentMonth) => acc + currentMonth, 0);
-
-            console.log(`Production énergétique annuelle : ${totalAnnuel.toFixed(2)} kWh/an`);
-
-            // Retourner uniquement le total annuel
-            return { totalAnnuel };
-
-        } else {
-            console.log("Les données E_m ne sont pas disponibles ou ne sont pas sous forme de tableau.");
-            return { message: "Données E_m non disponibles" };
-        }
-
+        return response.data;
     } catch (err) {
         return { message: "Erreur API", error: err.message, requete: err.response ? err.response.data : 'Aucune réponse' };
     }
@@ -448,7 +454,7 @@ ipcMain.on('open-link', (event, url) => {
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
     createWindow()
-    clearDatabase();
+    // clearDatabase();
 
 
   app.on('activate', () => {

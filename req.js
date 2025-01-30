@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded",async () => {
     const steps = document.querySelectorAll(".step");
     const forms = document.querySelectorAll(".form");
@@ -48,6 +46,8 @@ document.addEventListener("DOMContentLoaded",async () => {
         });
     });
     async function remplirChampBS(SIRET,numCO){
+        let analyseFactureOui = document.getElementById("analyseFactureOui");
+        let analyseFactureNon = document.getElementById("analyseFactureNon");
         let consoKwH = document.getElementById("consoKwH");
         let montantGlobal = document.getElementById("montantGlobal");
         let abo_conso = document.getElementById("abo_conso");
@@ -71,11 +71,16 @@ document.addEventListener("DOMContentLoaded",async () => {
 
         try {
             const dataSimulation = await window.electron.selectBilanSimulation(numCO,SIRET);
-            console.log("Données récupérées : ", dataSimulation);
+            // console.log("Données récupérées : ", dataSimulation);
 
             if (dataSimulation && dataSimulation.length > 0) {
                 const data = dataSimulation[0];
-
+                if(data.analyseFacture == 1) {
+                    analyseFactureOui.checked =true 
+                } else {
+                    analyseFactureNon.checked =true
+                }
+                
                 consoKwH.value = data.consoKwH;
                 montantGlobal.value = data.montantGlobal;
                 abo_conso.value=data.abo_Conso;
@@ -154,13 +159,7 @@ document.addEventListener("DOMContentLoaded",async () => {
     
     document.querySelector(".btn-submit").addEventListener("click", async (event) => {
         event.preventDefault();
-        try {
-
-            // Insertion du client, puis du représentant
-            
+        
             window.location.href = 'acceuilConnecté.html';
-        } catch (err) {
-            alert(err.message);
-        }
     });
-});
+});  

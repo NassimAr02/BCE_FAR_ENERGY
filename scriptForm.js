@@ -54,8 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //   console.log(SIRET,' ',raisonSociale,' ',adresse,' ',secteurActivite,' ',effectifEntreprise,' ',horaireOuverture,' ',dateCreation,' ',consommationAnnuelle,' ',proprieteMur,' ',dureeAmortissement,' ',depenseElec,' ',natureProjet,' ',puissanceCompteur,' ',ampérage,' ',pointLivraison,' ',typeCourant);
       try {
-        console.log(window.electron); // Vérifiez que l'objet electron est bien exposé
-console.log(window.electron.insertClient); // Vérifiez que la fonction insertClient est bien présente
+    
           await window.electron.insertClient(SIRET,raisonSociale,adresse,secteurActivite,effectifEntreprise,horaireOuverture,dateCreation,consommationAnnuelle,proprieteMur,dureeAmortissement,depenseElec,natureProjet,puissanceCompteur,ampérage,pointLivraison,typeCourant);
           console.log("Client inséré avec succès !");
       } catch (err) { 
