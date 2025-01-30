@@ -3,7 +3,9 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electron', {
     receiveData: (callback) => ipcRenderer.on('send-data', callback),
     login: (username, password) => ipcRenderer.invoke('login', username, password),
-    insertConseiller: (nomCO, prenomCO, mdpCO) => ipcRenderer.invoke('insertConseiller', nomCO, prenomCO, mdpCO),
+    insertConseiller: (nomCO, prenomCO, mdpCO) => {
+        return ipcRenderer.invoke('insertConseiller', nomCO, prenomCO, mdpCO)
+    },
     insertClient: (SIRET, raisonSociale, adresse, secteurActivite, effectifEntreprise, horaireOuverture,
         dateCreation, consommationAnnuelle, proprieteMur, dureeAmortissement, depenseElec,
         natureProjet, puissanceCompteur, ampérage, pointLivraison, typeCourant) => ipcRenderer.invoke("insertClient", SIRET, raisonSociale, adresse, secteurActivite, effectifEntreprise,

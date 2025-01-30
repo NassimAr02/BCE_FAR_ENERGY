@@ -19,8 +19,10 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "^33.3.1",
-    "electron-builder": "^25.1.8"
+    "electron": "^34.0.2",
+    "electron-builder": "^25.1.8",
+    "electron-forge-maker-nsis": "^25.1.8",
+    "electron-winstaller": "^5.4.0"
   },
   "dependencies": {
     "argon2": "^0.41.1",

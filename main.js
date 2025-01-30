@@ -1,5 +1,5 @@
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const Database = require('better-sqlite3');
 const argon2 = require('argon2');
@@ -7,10 +7,10 @@ const { shell } = require('electron');
 const Chart = require('chart.js');
 const axios = require("axios");
 const { type } = require('os');
-const { promisify } = require('util');
-
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
+
 let dbBCE;
+
 
 const createWindow = () => {
   // Création de la browser window.
@@ -21,7 +21,7 @@ const createWindow = () => {
         nodeIntegration: true,
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js'),
-        devTools: false
+        devTools: false,
     }
   })
   // Cette fonction récupère toutes les données de la base de données
@@ -272,12 +272,12 @@ ipcMain.handle('selectVueBilan', async (event) => {
 
 
 // Fonction pour insérer un conseiller
-// async function insertConseiller(nomCO, prenomCO, mdpCO) {
-//     const hash = await argon2.hash(mdpCO); // Hacher le mot de passe
-//     const req = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
-//     const idCO = `${nomCO}.${prenomCO}`; // Génération de l'identifiant
-//     req.run(nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
-// }
+async function insertConseiller(nomCO, prenomCO, mdpCO) {
+    const hash = await argon2.hash(mdpCO); // Hacher le mot de passe
+    const req = dbBCE.prepare('INSERT INTO Conseiller (nomCo, prenomCo, idCo, mdpCo) VALUES (?, ?, ?, ?)');
+    const idCO = `${nomCO}.${prenomCO}`; // Génération de l'identifiant
+    req.run(nomCO, prenomCO, idCO, hash); // Insertion avec mot de passe haché
+}
 
 
 
@@ -455,7 +455,7 @@ ipcMain.on('open-link', (event, url) => {
 app.whenReady().then(() => {
     createWindow()
     // clearDatabase();
-
+    
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
