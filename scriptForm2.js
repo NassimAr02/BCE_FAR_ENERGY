@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const coordonnées = await window.electron.getCoordonnee(adresseClient)
             let lat = coordonnées.lat;
             let lon = coordonnées.lon;
+            console.log("laT :", lat,"lon : ", lon);
             await recupDonnee(lat, lon);
         } catch(error) {
             console.error("Erreur lors de la récupération des coordonnées :", error);
@@ -106,16 +107,28 @@ document.addEventListener("DOMContentLoaded", () => {
         let posMontage = document.getElementById("posMontage").value;
         let incl = document.getElementById("incl").value;
         let azimut = document.getElementById("azimut").value;
-        let optiIncl1 = document.getElementById("optiIncl1").value;
-        let optiIncl2 = document.getElementById("optiIncl2").value;
+        let optiIncl1 = document.getElementById("optiIncl1");
+        let optiIncl2 = document.getElementById("optiIncl2");
 
-        if (!typePS || !puisKwP || !perteSy || !posMontage || !incl || !azimut || !optiIncl1 || !optiIncl2) {
+        if (optiIncl1.checked) {
+            optiIncl1 = 1;
+            optiIncl2 = 0;
+        } else if (optiIncl2.checked) {
+            optiIncl1 = 0;
+            optiIncl2 = 1;
+        } else {
+            optiIncl1 = 0;
+            optiIncl2 = 0;
+        }
+
+        if (!typePS || !puisKwP || !perteSy || !posMontage || !incl || !azimut) {
             alert("Veuillez remplir tous les champs.");
             return;
         }
         try {
             const capaciteProd = await window.electron.getCapaciteProd(lat,lon,typePS,puisKwP,perteSy,posMontage,incl,azimut,optiIncl1,optiIncl2);
-            console.log(capaciteProd.data);
+            console.log(capaciteProd);
+            document.getElementById("capaProd").value = capaciteProd.totalAnnuel;
         } catch(error){
             console.error("Erreur lors de la récupération des données :", error);
             alert("Impossible de récupérer la capacité de production.");

@@ -492,3 +492,9 @@ textarea:focus {
     box-shadow: .2em -.2em 0 0 currentcolor;
   }
 }
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}

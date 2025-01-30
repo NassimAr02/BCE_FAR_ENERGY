@@ -384,26 +384,45 @@ function clearDatabase() {
         dbBCE.exec('PRAGMA foreign_keys = ON;'); // Réactiver les clés étrangères
     }
 }
-ipcMain.handle("PVGIS-API", async (event,lati,long,typePS, puisKwP,perteSy,posMontage,incl,azimut,optiIncl,optiAngle) => {
+ipcMain.handle("PVGIS-API", async (event, lati, long, typePS, puisKwP, perteSy, posMontage, incl, azimut, optiIncl, optiAngle) => {
     try {
-        const reponse = await axios.post("https://re.jrc.ec.europa.eu/api/v5_1/tool_name?param1=value1&param2=value2&...",{
-            lat: lati,
-            lon: long,
-            peakpower: puisKwP,
-            pvtechchoice: typePS,
-            mountingplace: posMontage,
-            loss: perteSy,
-            angle: incl,
-            aspect: azimut,
-            optimalinclination: optiIncl,
-            optimalangles: optiAngle
+        const url = new URL("https://re.jrc.ec.europa.eu/api/v5_3/PVcalc");
+        url.searchParams.append("lat", lati);
+        url.searchParams.append("lon", long);
+        url.searchParams.append("peakpower", puisKwP);
+        url.searchParams.append("pvtechchoice", typePS);
+        url.searchParams.append("mountingplace", posMontage);
+        url.searchParams.append("loss", perteSy);
+        url.searchParams.append("angle", incl);
+        url.searchParams.append("aspect", azimut);
+        url.searchParams.append("optimalinclination", optiIncl);
+        url.searchParams.append("optimalangles", optiAngle);
 
-        })
-        return reponse.data;
-    }catch(err){
-        return { message: "Erreur API", error: err.message}
+        // Afficher l'URL complète de la requête
+        console.log("Requête envoyée : ", url.toString());
+
+        const response = await axios.get(url.toString());
+
+        // Vérification si la clé "E_m" est présente dans la réponse
+        if (response.data && response.data.E_m && Array.isArray(response.data.E_m)) {
+            // Calcul du total annuel en additionnant toutes les valeurs de E_m
+            const totalAnnuel = response.data.E_m.reduce((acc, currentMonth) => acc + currentMonth, 0);
+
+            console.log(`Production énergétique annuelle : ${totalAnnuel.toFixed(2)} kWh/an`);
+
+            // Retourner uniquement le total annuel
+            return { totalAnnuel };
+
+        } else {
+            console.log("Les données E_m ne sont pas disponibles ou ne sont pas sous forme de tableau.");
+            return { message: "Données E_m non disponibles" };
+        }
+
+    } catch (err) {
+        return { message: "Erreur API", error: err.message, requete: err.response ? err.response.data : 'Aucune réponse' };
     }
-})
+});
+
 ipcMain.handle("recupCoordonnee", async (event,adresse) => {
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(adresse)}&format=json`;
     try {
