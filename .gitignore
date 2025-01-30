@@ -55,4 +55,6 @@ patches/mtime-cache.json
 spec/fixtures/logo.png
 out/
 
-/installers/
+/installers/*.exe
+/installers/*.msi
+/installers/*.nupkg
