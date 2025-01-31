@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
   const steps = document.querySelectorAll(".step");
   const forms = document.querySelectorAll(".form");
@@ -82,6 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   }
 
+  document.getElementById("Accueil").addEventListener("click",(event) =>{
+    event.preventDefault();
+    window.location.href = "acceuilConnecte.html";
+});
   // Soumission du formulaire
   document.querySelector(".btn-submit").addEventListener("click", async (event) => {
       event.preventDefault();

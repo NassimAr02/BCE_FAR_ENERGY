@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Ajuster la largeur du fieldset pour l'étape 2
-        if ((step === 1) || (step === 3)) {
+        if ((step === 1) || (step === 4)) {
             stepContainer.classList.add("wide");
         } else {
             stepContainer.classList.remove("wide");
@@ -174,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     
-    
     // Soumission du formulaire
     document.querySelector(".btn-submit").addEventListener("click", async (event) => {
         event.preventDefault();
@@ -183,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Insertion du client, puis du représentant
 
             await BilanSimulation();
-            window.location.href = 'acceuilConnecté.html';
+            window.location.href = 'acceuilConnecte.html';
         } catch (err) {
             alert(err.message);
         }

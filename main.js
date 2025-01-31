@@ -21,7 +21,7 @@ const createWindow = () => {
         nodeIntegration: true,
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js'),
-        devTools: false,
+        devTools: true,
     }
   })
   // Cette fonction récupère toutes les données de la base de données

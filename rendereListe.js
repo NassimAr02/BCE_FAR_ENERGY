@@ -165,7 +165,10 @@ async function remplirChampC(SIRET) {
 }
 
 // Exécute la fonction lors du chargement de la page
-
+document.getElementById("Accueil").addEventListener("click",(event) =>{
+    event.preventDefault();
+    window.location.href = "acceuilConnecte.html";
+});
 // Soumission du formulaire
 document.querySelector(".btn-submit").addEventListener("click", async (event) => {
     event.preventDefault();

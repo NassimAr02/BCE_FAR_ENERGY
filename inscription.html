@@ -21,7 +21,7 @@
                 alert("Les deux mots de passe ne correspondent pas");
                 return false; // Empêche la soumission du formulaire
             }else if((pass.length < 12)||!pass.match(/[a-z]/) && !pass.match(/[A-Z]/)||!pass.match(/\d/)||!pass.match(/[^a-zA-Z\d]/)){
-                alert("Votre mot de passe doit comprendre :\n- Minimum 12 caractères\n- Minimum 1 majuscules et 1 minuscule\n- Minimum un chiffre \n- Minimum un caractère spécial");
+                alert("Votre mot de passe doit comprendre :\ Minimum 12 caractères\ Minimum 1 majuscules et 1 minuscule\ Minimum un chiffre \ Minimum un caractère spécial");
                 return false;
             }
             return true; // Permet la soumission du formulaire

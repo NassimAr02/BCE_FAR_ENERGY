@@ -336,8 +336,8 @@ textarea:focus {
 @media screen and (max-width: 1024px) {
   /* Réduit la taille du fieldset et ajuste le padding */
   fieldset {
-    width: 90%; /* Réduit la largeur du formulaire */
-    padding: 20px; /* Réduit l'espacement interne */
+    width: 85%; /* Réduit la largeur du formulaire */
+    padding: 15px; /* Réduit l'espacement interne */
   }
 
   /* Réduit la taille de la police dans les champs de texte */
@@ -497,4 +497,29 @@ textarea:focus {
   align-items: center;
   gap: 10px;
   margin-bottom: 5px;
+}
+@media screen and (max-width: 480px) {
+  fieldset {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .step-container {
+    width: 100%;
+  }
+
+  .step {
+    width: 30%; /* Ajuster encore plus si besoin */
+    font-size: 10px;
+  }
+
+  table th, table td {
+    font-size: 12px; /* Encore plus petit */
+    padding: 6px;
+  }
+
+  button {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
 }

@@ -160,6 +160,6 @@ document.addEventListener("DOMContentLoaded",async () => {
     document.querySelector(".btn-submit").addEventListener("click", async (event) => {
         event.preventDefault();
         
-            window.location.href = 'acceuilConnecté.html';
+            window.location.href = 'acceuilConnecte.html';
     });
 });  
