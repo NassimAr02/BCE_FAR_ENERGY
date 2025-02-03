@@ -6,11 +6,36 @@ const argon2 = require('argon2');
 const { shell } = require('electron');
 const Chart = require('chart.js');
 const axios = require("axios");
-const { type } = require('os');
+const fs = require('fs');
+const { spawn } = require('child_process');
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
 
 let dbBCE;
-
+if (require('electron-squirrel-startup')) {
+    app.quit();
+  }
+  
+  function createDesktopShortcut() {
+      const desktopShortcutPath = path.join(app.getPath('desktop'), 'BCE.lnk');
+      const exePath = process.execPath;
+      const iconPath = path.join(__dirname, 'logo-FAR.ico'); // Spécifie le chemin de l'icône
+      const script = `
+          $WshShell = New-Object -ComObject WScript.Shell;
+          $Shortcut = $WshShell.CreateShortcut('${desktopShortcutPath}');
+          $Shortcut.TargetPath = '${exePath}';
+          $Shortcut.IconLocation = '${iconPath}';  
+          $Shortcut.Save();
+      `;
+  
+      spawn('powershell.exe', ['-Command', script], { shell: true })
+          .on('exit', (code) => {
+              if (code === 0) {
+                  console.log('Raccourci créé avec succès !');
+              } else {
+                  console.error('Erreur lors de la création du raccourci.');
+              }
+          });
+  }
 
 const createWindow = () => {
   // Création de la browser window.
@@ -454,6 +479,7 @@ ipcMain.on('open-link', (event, url) => {
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
     createWindow()
+    createDesktopShortcut()
     // clearDatabase();
     
 

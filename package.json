@@ -30,5 +30,16 @@
     "better-sqlite3": "^11.7.2",
     "chart.js": "^4.4.7",
     "electron-squirrel-startup": "^1.0.1"
+  },
+  "build": {
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
   }
 }

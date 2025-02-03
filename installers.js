@@ -1,21 +1,22 @@
 const electronInstaller = require('electron-winstaller');
-const path = require('path')
-// Chemin de ton répertoire où se trouve l'application compilée
-const appDirectory = path.join(__dirname, 'out\\bce-win32-x64'); // Ajuste ce chemin si nécessaire
+const path = require('path');
 
-// Chemin où tu veux générer l'installateur
-const outputDirectory = path.join(__dirname, 'installers'); // Dossier de sortie pour l'installateur
-
-// Détails de l'installateur, y compris l'icône
-
+const appDirectory = path.join(__dirname, 'out\\bce-win32-x64');
+const outputDirectory = path.join(__dirname, 'installers');
 const iconPath = path.join(__dirname, 'logo-FAR.ico');
+
 console.log('Chemin de l\'icône :', iconPath);
+
 electronInstaller.createWindowsInstaller({
     appDirectory: appDirectory,
     outputDirectory: outputDirectory,
-    authors: 'ARRASS', // Remplace par ton nom ou ton entreprise
-    exe: 'bce.exe',  // Nom de ton exécutable
-    icon: iconPath // Icône de l'application
+    authors: 'ARRASS',
+    exe: 'bce.exe',
+    iconUrl: 'file://' + iconPath, // URL absolue requise pour Squirrel
+    setupIcon: iconPath,
+    shortcutIcon: iconPath,
+    noMsi: true, // Désactive la création d'un .msi
+    setupExe: 'BCE-Setup.exe', // Nom du setup généré
   }).then(() => {
     console.log('Installateur créé avec succès');
   }).catch((err) => {
