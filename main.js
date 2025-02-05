@@ -1,5 +1,5 @@
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain,dialog } = require('electron')
 const path = require('path')
 const Database = require('better-sqlite3');
 const argon2 = require('argon2');
@@ -467,6 +467,14 @@ ipcMain.handle("recupCoordonnee", async (event,adresse) => {
     } catch (error) {
         return { error: "Erreur lors de la récupération des coordonnées" };
     }
+})
+ipcMain.on("show-message", (event, message) => {
+    dialog.showMessageBox({
+      type: "error",
+      title: "Erreur",
+      message: message,
+      buttons: ["OK"],
+    });
 })
 
 ipcMain.on('open-link', (event, url) => {

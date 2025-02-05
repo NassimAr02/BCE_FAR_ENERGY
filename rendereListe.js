@@ -178,7 +178,7 @@ document.querySelector(".btn-submit").addEventListener("click", async (event) =>
         const numCO = url.searchParams.get("numCO");
         window.location.href = `suiteConsulteBilan.html?siret=${encodeURIComponent(SIRET)}&numCO=${encodeURIComponent(numCO)}`;
     } catch (err) {
-        alert(err.message);
+        window.electron.showMessage(err.message);
     }
 });
 

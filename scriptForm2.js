@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("calculeProd").addEventListener("click", async () => {
         let adresseClient = document.getElementById("adresseClient").value;
         if (!adresseClient) {
-            alert("Veuillez entrer une adresse.");
+            window.electron.showMessage("Veuillez entrer une adresse.");
             return;
         }
         try{
@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await recupDonnee(lat, lon);
         } catch(error) {
             console.error("Erreur lors de la récupération des coordonnées :", error);
-            alert("Impossible d'obtenir les coordonnées. Vérifiez l'adresse.");
+            window.electron.showMessage("Impossible d'obtenir les coordonnées. Vérifiez l'adresse.");
         }
         
     })
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         if (!typePS || !puisKwP || !perteSy || !posMontage) {
-            alert("Veuillez remplir tous les champs.");
+            window.electron.showMessage("Veuillez remplir tous les champs.");
             return;
         }
         
@@ -164,12 +164,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 remplirChampF()
             } else {
                 console.log("Données de production non disponibles sous forme attendue.");
-                alert("Impossible de récupérer les données de production.");
+                window.electron.showMessage("Impossible de récupérer les données de production.");
             }
     
         } catch (error) {
             console.error("Erreur lors de la récupération des données :", error);
-            alert("Impossible de récupérer la capacité de production.");
+            window.electron.showMessage("Impossible de récupérer la capacité de production.");
         }
     }
     
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await BilanSimulation();
             window.location.href = 'acceuilConnecte.html';
         } catch (err) {
-            alert(err.message);
+            window.electron.showMessage(err.message);
         }
     });
 });

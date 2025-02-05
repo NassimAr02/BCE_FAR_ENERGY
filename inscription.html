@@ -14,18 +14,7 @@
             // Génère l'identifiant : nom.prenom
             idCompte.value = nom + '.' + prenom;
         }
-        function validate() {
-            let pass = document.getElementById('mdpCO1').value;
-            let passConfirm = document.getElementById('mdpCO2').value;
-            if (pass !== passConfirm) {
-                alert("Les deux mots de passe ne correspondent pas");
-                return false; // Empêche la soumission du formulaire
-            }else if((pass.length < 12)||!pass.match(/[a-z]/) && !pass.match(/[A-Z]/)||!pass.match(/\d/)||!pass.match(/[^a-zA-Z\d]/)){
-                alert("Votre mot de passe doit comprendre :\ Minimum 12 caractères\ Minimum 1 majuscules et 1 minuscule\ Minimum un chiffre \ Minimum un caractère spécial");
-                return false;
-            }
-            return true; // Permet la soumission du formulaire
-        }
+        
     </script>
 </head>
 <body>
@@ -77,7 +66,7 @@
                     window.location.href = 'connexion.html';
                 } catch (err) {
                     console.error('Erreur lors de l\'insertion :', err);
-                    alert("Échec de l'insertion des données.");
+                    window.electron.showMessage("Échec de l'insertion des données.");
                     
                 }
             }

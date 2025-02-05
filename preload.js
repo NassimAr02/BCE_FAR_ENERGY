@@ -29,5 +29,6 @@ contextBridge.exposeInMainWorld('electron', {
     getCoordonnee: (adresse) => ipcRenderer.invoke("recupCoordonnee",adresse),
     getCapaciteProd: (lati, long, typePS, puisKwP, perteSy, posMontage, incl, azimut, optiIncl, optiAngle) => {
         return ipcRenderer.invoke("PVGIS-API", lati, long, typePS, puisKwP, perteSy, posMontage, incl, azimut, optiIncl, optiAngle);
-    }
+    },
+    showMessage: (message) => ipcRenderer.send("show-message", message),
 });

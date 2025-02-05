@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           window.location.href = `suiteBilan.html?siret=${encodeURIComponent(numSIRET)}`;
       } catch (err) {
-          alert(err.message);
+        window.electron.showMessage(err.message);
       }
   });
 });
