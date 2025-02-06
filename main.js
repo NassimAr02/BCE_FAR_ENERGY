@@ -46,28 +46,28 @@ const createWindow = () => {
         nodeIntegration: true,
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js'),
-        devTools: true,
+        devTools: false,
     }
   })
   // Cette fonction récupère toutes les données de la base de données
-    function afficherToutesLesDonnees() {
-        try {
-            const tables = dbBCE.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
+    // function afficherToutesLesDonnees() {
+    //     try {
+    //         const tables = dbBCE.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
 
-            tables.forEach(table => {
-                console.log(`\nDonnées de la table : ${table.name}`);
-                const rows = dbBCE.prepare(`SELECT * FROM ${table.name}`).all();
-                console.log(rows);
-                // Envoie les données à la fenêtre de rendu
-                mainWindow.webContents.send('send-data', { tableName: table.name, rows: JSON.parse(JSON.stringify(rows)) });
-            });
-        } catch (err) {
-            console.error("Erreur lors de l'affichage des données : ", err);
-        }
-    }
+    //         tables.forEach(table => {
+    //             console.log(`\nDonnées de la table : ${table.name}`);
+    //             const rows = dbBCE.prepare(`SELECT * FROM ${table.name}`).all();
+    //             console.log(rows);
+    //             // Envoie les données à la fenêtre de rendu
+    //             mainWindow.webContents.send('send-data', { tableName: table.name, rows: JSON.parse(JSON.stringify(rows)) });
+    //         });
+    //     } catch (err) {
+    //         console.error("Erreur lors de l'affichage des données : ", err);
+    //     }
+    // }
 
-    // Afficher les données toutes les 30 secondes
-    setInterval(afficherToutesLesDonnees, 30000);
+    // // Afficher les données toutes les 30 secondes
+    // setInterval(afficherToutesLesDonnees, 30000);
 
 
   // et chargement de l'index.html de l'application.
