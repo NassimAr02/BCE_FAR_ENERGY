@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const SIRET = url.searchParams.get("siret")
         
         try {
-            await window.electron.insBilanSimulation(analyseFacture,consoKwH,montantGlobal,abo_Conso,partAcheminement,CTA_CSPE,TVA,necessite,
+            await window.electron.insertBilanSimulation(analyseFacture,consoKwH,montantGlobal,abo_Conso,partAcheminement,CTA_CSPE,TVA,necessite,
                 motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capacitéProd,
                 puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET);
             console.log("Bilan inséré avec succès");
@@ -153,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     }
                 }
-    
                 // Calculer la production annuelle
                 const totalAnnuel = moisDonnees.reduce((acc, monthData) => acc + monthData.E_m, 0);
                 // console.log(`Production annuelle totale : ${totalAnnuel} kWh`);

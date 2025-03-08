@@ -9,6 +9,8 @@ const axios = require("axios");
 const fs = require('fs');
 const { spawn } = require('child_process');
 // Déclarez dbBCE en dehors de initDatabase pour qu'elle soit accessible globalement
+const { autoUpdater } = require('electron-updater');
+
 
 let dbBCE;
 if (require('electron-squirrel-startup')) {
@@ -18,12 +20,10 @@ if (require('electron-squirrel-startup')) {
   function createDesktopShortcut() {
       const desktopShortcutPath = path.join(app.getPath('desktop'), 'BCE.lnk');
       const exePath = process.execPath;
-      const iconPath = path.join(__dirname, 'logo-FAR.ico'); // Spécifie le chemin de l'icône
       const script = `
           $WshShell = New-Object -ComObject WScript.Shell;
           $Shortcut = $WshShell.CreateShortcut('${desktopShortcutPath}');
           $Shortcut.TargetPath = '${exePath}';
-          $Shortcut.IconLocation = '${iconPath}';  
           $Shortcut.Save();
       `;
   
@@ -43,11 +43,14 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-        nodeIntegration: true,
+        nodeIntegration: false,
         contextIsolation: true,
+        enableRemoteModule: true,
         preload: path.join(__dirname, 'preload.js'),
         devTools: false,
-    }
+    },
+    title:"Electrons",
+    webSecurity: false,
   })
   // Cette fonction récupère toutes les données de la base de données
     // function afficherToutesLesDonnees() {
@@ -76,6 +79,15 @@ const createWindow = () => {
   // Ouvrir les outils de développement.
   // mainWindow.webContents.openDevTools()
   initDatabase();
+  mainWindow.webContents.executeJavaScript(`
+    if (window.trustedTypes && window.trustedTypes.createPolicy) {
+      window.trustedTypes.createPolicy('default', {
+        createHTML: (string) => string,
+        createScriptURL: (string) => string,
+        createScript: (string) => string,
+      });
+    }
+  `);
 }
 
 
@@ -275,7 +287,7 @@ async function selectVueBilan() {
             row.necessite = row.necessite === 1 ? 'Oui' : 'Non';
         });
 
-        console.log('Données récupérées de vueBilan :', results); // Debug
+        
         return results;
     } catch (err) {
         console.error('Erreur dans selectVueBilan :', err);
@@ -365,6 +377,35 @@ async function verifyPassword(username, password) {
     }
 }
 
+async function recupNumCO(username, password) {
+    const user = dbBCE.prepare('SELECT * FROM Conseiller WHERE idCo = ?').get(username);
+
+    if (!user) {
+        throw new Error("Utilisateur non trouvé");
+    }
+
+    try {
+        const valid = await argon2.verify(user.mdpCo, password);
+        if (!valid) {
+            throw new Error("Identifiant ou Mot de passe incorrect");
+        }
+
+        return user.numCO;
+    } catch (err) {
+        console.error("Erreur lors de l'authentification:", err);
+        throw err; // Propage l'erreur
+    }
+}
+
+ipcMain.handle("recupNumCO", async (event, username, password) => {
+    try {
+        return await recupNumCO(username, password);
+    } catch (err) {
+        console.error("Erreur dans le handler IPC de recupNumCO:", err);
+        throw new Error("Échec de l'authentification");
+    }
+});
+
 // Gestion de la connexion
 ipcMain.handle('login', async (event, username, password) => {
     const isValid = await verifyPassword(username, password);
@@ -390,7 +431,7 @@ async function insertBilanSimulation(analyseFacture, consoKwH, montantGlobal, ab
         console.log("Nombre de paramètres :", arguments.length);
         req.run(analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, CTA_CSPE, TVA, necessite,
                 motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, montantGlobalTA, capaciteProd,
-                puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET, numCon);
+                puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET,numCon);
         
         return "BilanSimulation ajouté avec succès";
     } catch (err) {
@@ -414,7 +455,47 @@ ipcMain.handle('insertBilanSimulation',async(event,analyseFacture,consoKwH,monta
         throw new Error('Erreur lors de l\'ajout du BilanSimulation')
     }
 })
+async function insBilanSimulation(analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, CTA_CSPE, TVA, necessite,
+    motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, montantGlobalTA, capaciteProd,
+    puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET,numCO) {
 
+
+    try {
+        const req = dbBCE.prepare(`
+            INSERT INTO bilanSimulation (analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, 
+                CTA_CSPE, TVA, necessite, motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, 
+                montantGlobalTA, capaciteProd, puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, 
+                economie25a, SIRET, numCO) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+
+        console.log("Nombre de paramètres :", arguments.length);
+        req.run(analyseFacture, consoKwH, montantGlobal, abo_conso, partAcheminement, CTA_CSPE, TVA, necessite,
+                motivationProjet, refusProjet, prixKwH2024, prixKwH2030, prixKwH2035, montantGlobalTA, capaciteProd,
+                puissanceInsta, coutPanneau, coutBatterie, primeAutoCo, RAC, economie25a, SIRET, numCO);
+        
+        return "BilanSimulation ajouté avec succès";
+    } catch (err) {
+        console.error("Erreur lors de l'insertion du BilanSimulation :", err);
+        throw new Error(`Erreur lors de l'ajout du BilanSimulation : ${err.message}`);
+    }
+}
+
+
+
+ipcMain.handle('insBilanSimulation',async(event,analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+    motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+    puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCO)=>{
+    try {
+        await insBilanSimulation(analyseFacture,consoKwH,montantGlobal,abo_conso,partAcheminement,CTA_CSPE,TVA,necessite,
+            motivationProjet,refusProjet,prixKwH2024,prixKwH2030,prixKwH2035,montantGlobalTA,capaciteProd,
+            puissanceInsta,coutPanneau,coutBatterie,primeAutoCo,RAC,economie25a,SIRET,numCO)
+        return 'BilanSimulation ajouté avec succès';
+    } catch(err){
+        console.error('Erreur lors de l\'insertion du BilanSimulation : ',err)
+        throw new Error('Erreur lors de l\'ajout du BilanSimulation')
+    }
+})
 function clearDatabase() {
     try {
         dbBCE.exec('PRAGMA foreign_keys = OFF;'); // Désactiver les clés étrangères pour éviter les conflits
@@ -445,8 +526,6 @@ ipcMain.handle("PVGIS-API", async (event, lati, long, typePS, puisKwP, perteSy, 
         url.searchParams.append("aspect", azimut);
         url.searchParams.append("optimalinclination", optiIncl);
         url.searchParams.append("optimalangles", optiAngle);
-        console.log("Requête envoyée : ", url.toString());
-
         const response = await axios.get(url.toString());
         return response.data;
     } catch (err) {
@@ -477,18 +556,13 @@ ipcMain.on("show-message", (event, message) => {
     });
 })
 
-ipcMain.on('open-link', (event, url) => {
-    console.log('URL reçue pour ouvrir un lien externe :', url);
-    shell.openExternal(url).catch((err) => {
-        console.error('Erreur lors de l\'ouverture du lien externe :', err);
-    });
-});
+
 
 // Appeler cette méthode quand Electron a fini de s'initialiser
 app.whenReady().then(() => {
     createWindow()
     createDesktopShortcut()
-    // clearDatabase();
+    //clearDatabase();
     
 
   app.on('activate', () => {
