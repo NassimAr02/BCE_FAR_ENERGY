@@ -49,7 +49,7 @@ const createWindow = () => {
         preload: path.join(__dirname, 'preload.js'),
         devTools: false,
     },
-    title:"Electrons",
+    title:"BCE",
     webSecurity: false,
   })
   // Cette fonction récupère toutes les données de la base de données
