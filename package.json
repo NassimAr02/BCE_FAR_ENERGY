@@ -1,6 +1,6 @@
 {
   "name": "bce",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "main.js",
   "type": "commonjs",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "ISC",
   "description": "Application de bureau pour les bilan de consommation énergétique",
   "devDependencies": {
-    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/cli": "^7.10.2",
     "@electron-forge/maker-deb": "^7.6.0",
     "@electron-forge/maker-rpm": "^7.6.0",
     "@electron-forge/maker-squirrel": "^7.6.0",

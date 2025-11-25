@@ -24,7 +24,12 @@
     <fieldset>
         <form id="login">
             <p id="error-message1" style="color: red; display: none;">Les deux mots passe ne correspondent pas</p> <!-- Message d'erreur -->
-            <p id="error-message2" style="color: red; display: none;">Votre mot de passe doit comprendre :\n- Minimum 12 caractères\n- Minimum 1 majuscules et 1 minuscule\n- Minimum un chiffre \n- Minimum un caractère spécial</p> <!-- Message d'erreur -->
+            <p id="error-message2" style="color: red; display: none;">Votre mot de passe doit comprendre :
+                <br>- Minimum 12 caractères
+                <br>- Minimum 1 majuscules et 1 minuscule
+                <br>- Minimum un chiffre 
+                <br>- Minimum un caractère spécial
+            </p> <!-- Message d'erreur -->
             <label for="nomCO">Nom du commercial</label><input type="text" name="nomCO" id="nomCO" oninput="updateIdCompte()" required>
             <label for="prenomCO">Prénom du commercial</label><input type="text" name="prenomCO" id="prenomCO" oninput="updateIdCompte()" required>
             <label for="idCompte">Identifiant du compte</label><input type="text" name="idCompte" id="idCompte" readonly required>
